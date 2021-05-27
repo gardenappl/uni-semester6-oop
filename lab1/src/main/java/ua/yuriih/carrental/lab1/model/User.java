@@ -6,10 +6,10 @@ public final class User {
     private final int id;
     private final String name;
     private final String password;
-    private final int currentCar;
+    private final Integer currentCar;
     private final boolean isAdmin;
 
-    public User(int id, String name, String password, int currentCar, boolean isAdmin) {
+    public User(int id, String name, String password, Integer currentCar, boolean isAdmin) {
         this.id = id;
         this.name = name;
         this.password = password;
