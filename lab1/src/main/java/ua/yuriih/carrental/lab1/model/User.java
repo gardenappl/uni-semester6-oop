@@ -3,22 +3,22 @@ package ua.yuriih.carrental.lab1.model;
 import java.util.Objects;
 
 public final class User {
-    private final int id;
+    private final long passportId;
     private final String name;
     private final String password;
     private final Integer currentCar;
     private final boolean isAdmin;
 
-    public User(int id, String name, String password, Integer currentCar, boolean isAdmin) {
-        this.id = id;
+    public User(long passportId, String name, String password, Integer currentCar, boolean isAdmin) {
+        this.passportId = passportId;
         this.name = name;
         this.password = password;
         this.currentCar = currentCar;
         this.isAdmin = isAdmin;
     }
 
-    public int getId() {
-        return id;
+    public long getPassportId() {
+        return passportId;
     }
 
     public boolean isAdmin() {
@@ -40,7 +40,7 @@ public final class User {
     @Override
     public String toString() {
         return "User{" +
-                "id=" + id +
+                "passportId=" + passportId +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", currentCar=" + currentCar +
@@ -53,11 +53,11 @@ public final class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && currentCar == user.currentCar && isAdmin == user.isAdmin && name.equals(user.name) && password.equals(user.password);
+        return passportId == user.passportId && currentCar.equals(user.currentCar) && isAdmin == user.isAdmin && name.equals(user.name) && password.equals(user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, password, currentCar, isAdmin);
+        return Objects.hash(passportId, name, password, currentCar, isAdmin);
     }
 }

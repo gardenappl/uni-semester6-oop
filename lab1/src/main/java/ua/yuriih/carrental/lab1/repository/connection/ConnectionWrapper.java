@@ -38,14 +38,16 @@ public class ConnectionWrapper {
         }
     }
 
-    public void doTransaction(Transaction transaction) {
+    public <T> T doTransaction(Transaction<T> transaction) {
         try {
             connection.setAutoCommit(false);
             beginTransactionStatement.execute();
 
-            transaction.doTransaction();
+            T result = transaction.doTransaction();
             commitTransactionStatement.execute();
             connection.setAutoCommit(true);
+
+            return result;
         } catch (Exception e) {
             try {
                 rollbackTransactionStatement.execute();
@@ -66,7 +68,7 @@ public class ConnectionWrapper {
         }
     }
 
-    public interface Transaction {
-        void doTransaction() throws SQLException;
+    public interface Transaction<T> {
+        T doTransaction() throws SQLException;
     }
 }

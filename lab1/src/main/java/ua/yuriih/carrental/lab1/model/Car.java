@@ -1,5 +1,7 @@
 package ua.yuriih.carrental.lab1.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.math.BigDecimal;
 import java.util.Objects;
 
@@ -8,14 +10,17 @@ public final class Car {
     private final String model;
     private final String manufacturer;
     private final BigDecimal hrnPerDay;
-    private final Integer currentUserId;
+    @JsonIgnore
+    private final Long currentUserId;
+    private final String thumbnailUrl;
 
-    public Car(int id, String model, String manufacturer, BigDecimal hrnPerDay, Integer currentUserId) {
+    public Car(int id, String model, String manufacturer, BigDecimal hrnPerDay, Long currentUserId, String thumbnailUrl) {
         this.id = id;
         this.model = model;
         this.manufacturer = manufacturer;
         this.hrnPerDay = hrnPerDay;
         this.currentUserId = currentUserId;
+        this.thumbnailUrl = thumbnailUrl;
     }
 
     public String getModel() {
@@ -30,12 +35,16 @@ public final class Car {
         return hrnPerDay;
     }
 
-    public Integer getCurrentUserId() {
+    public Long getCurrentUserId() {
         return currentUserId;
     }
 
     public int getId() {
         return id;
+    }
+
+    public String getThumbnailUrl() {
+        return thumbnailUrl;
     }
 
     @Override
@@ -46,6 +55,7 @@ public final class Car {
                 ", manufacturer='" + manufacturer + '\'' +
                 ", hrnPerDay=" + hrnPerDay +
                 ", currentUserId=" + currentUserId +
+                ", thumnbailUrl=" + thumbnailUrl +
                 '}';
     }
 
@@ -54,11 +64,11 @@ public final class Car {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Car car = (Car) o;
-        return id == car.id && model.equals(car.model) && manufacturer.equals(car.manufacturer) && hrnPerDay.equals(car.hrnPerDay) && Objects.equals(currentUserId, car.currentUserId);
+        return id == car.id && model.equals(car.model) && manufacturer.equals(car.manufacturer) && hrnPerDay.equals(car.hrnPerDay) && Objects.equals(currentUserId, car.currentUserId) && Objects.equals(thumbnailUrl, car.thumbnailUrl);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, model, manufacturer, hrnPerDay, currentUserId);
+        return Objects.hash(id, model, manufacturer, hrnPerDay, currentUserId, thumbnailUrl);
     }
 }

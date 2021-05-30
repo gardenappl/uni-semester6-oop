@@ -1,5 +1,6 @@
 package ua.yuriih.carrental.lab1.model;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -7,25 +8,29 @@ public final class RentRequest {
     private final int id;
     private final int status;
     private final String statusMessage;
-    private final int passportId;
-    private final int userId;
+    private final long userId;
     private final int days;
+    private final int carId;
     private final LocalDate startDate;
     private final LocalDate endDate;
+    private final BigDecimal paymentCost;
 
-    private static final int STATUS_PENDING = 0;
-    private static final int STATUS_DENIED = 1;
-    private static final int STATUS_ACTIVE = 2;
-    private static final int STATUS_REPAIR_NEEDED = 3;
+    public static final int STATUS_PENDING = 0;
+    public static final int STATUS_DENIED = 1;
+    public static final int STATUS_NEEDS_PAYMENT = 3;
+    public static final int STATUS_ACTIVE = 3;
+    public static final int STATUS_REPAIR_NEEDED = 4;
+    public static final int STATUS_ENDED = 5;
 
-    public RentRequest(int id, int status, String statusMessage, int passportId, int userId, int days, LocalDate startDate) {
+    public RentRequest(int id, int status, String statusMessage, long userId, int days, int carId, LocalDate startDate, BigDecimal paymentCost) {
         this.id = id;
         this.status = status;
         this.statusMessage = statusMessage;
-        this.passportId = passportId;
         this.userId = userId;
         this.days = days;
+        this.carId = carId;
         this.startDate = startDate;
+        this.paymentCost = paymentCost;
         this.endDate = startDate.plusDays(days);
     }
 
@@ -37,16 +42,16 @@ public final class RentRequest {
         return statusMessage;
     }
 
-    public int getPassportId() {
-        return passportId;
-    }
-
-    public int getUserId() {
+    public long getUserId() {
         return userId;
     }
 
     public int getDays() {
         return days;
+    }
+
+    public int getCarId() {
+        return carId;
     }
 
     public LocalDate getStartDate() {
@@ -61,16 +66,21 @@ public final class RentRequest {
         return id;
     }
 
+    public BigDecimal getPaymentCost() {
+        return paymentCost;
+    }
+
     @Override
     public String toString() {
         return "RentRequest{" +
                 "id=" + id +
                 ", status=" + status +
                 ", statusMessage='" + statusMessage + '\'' +
-                ", passportId=" + passportId +
                 ", userId=" + userId +
                 ", days=" + days +
+                ", carId=" + carId +
                 ", startDate=" + startDate +
+                ", paymentCost=" + paymentCost +
                 '}';
     }
 
@@ -79,11 +89,11 @@ public final class RentRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RentRequest that = (RentRequest) o;
-        return id == that.id && status == that.status && passportId == that.passportId && userId == that.userId && days == that.days && Objects.equals(statusMessage, that.statusMessage) && startDate.equals(that.startDate);
+        return id == that.id && status == that.status && userId == that.userId && days == that.days && carId == that.carId && Objects.equals(statusMessage, that.statusMessage) && startDate.equals(that.startDate) && paymentCost.equals(that.paymentCost);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, status, statusMessage, passportId, userId, days, startDate);
+        return Objects.hash(id, status, statusMessage, userId, days, carId, startDate, paymentCost);
     }
 }
