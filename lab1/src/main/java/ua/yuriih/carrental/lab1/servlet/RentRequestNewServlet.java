@@ -18,15 +18,15 @@ import java.time.LocalDate;
 @WebServlet(value = "/new-request", name = "newRequest")
 public class RentRequestNewServlet extends HttpServlet {
     private static class Request {
-        long token;
-        int carId;
-        int days;
-        String startDate;
-        String hrnAmount;
+        public long token;
+        public int carId;
+        public int days;
+        public String startDate;
+        public String hrnAmount;
     }
 
     private static class Response {
-        boolean success;
+        public final boolean success;
 
         Response(boolean success) {
             this.success = success;

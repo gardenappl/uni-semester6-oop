@@ -1,14 +1,15 @@
 import React, { Component } from "react";
-import { NavLink, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import { fetchPostJson } from "../utils.js";
 import API_SERVER from "../Constants.js";
 
-class Login extends Component {
+class Register extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			username: "",
-			password: ""
+			password: "",
+			passportId: ""
 		};
 
 		this.handleChange = this.handleChange.bind(this);
@@ -20,8 +21,7 @@ class Login extends Component {
 		});
 	}
 	handleSubmit(event) {
-		console.log("Logging in");
-		fetchPostJson(API_SERVER + "/login", this.state)
+		fetchPostJson(API_SERVER + "/register", this.state)
 		.then((json) => {
 			if (typeof json['token'] === 'number') {
 				localStorage.setItem("token", json['token']);
@@ -30,7 +30,7 @@ class Login extends Component {
 					history.push('/');
 				});
 			} else {
-				alert("Wrong username or password");
+				alert("This username or passport ID is already taken.");
 			}
 		});
 		event.preventDefault();
@@ -48,11 +48,15 @@ class Login extends Component {
 					<input type="password" name="password" onChange={this.handleChange} />
 				</label>
 				<br/>
-				<input type="submit" value="Log in" />
+				<label>
+					Passport ID:
+					<input type="text" name="passportId" onChange={this.handleChange} />
+				</label>
+				<br/>
+				<input type="submit" value="Register" />
 			</form>
-			<NavLink to="/register">Register</NavLink>
 		</div>
 	}
 }
 
-export default Login;
+export default Register;

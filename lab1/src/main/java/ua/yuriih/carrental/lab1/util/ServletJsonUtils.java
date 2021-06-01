@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.StringReader;
+import java.util.stream.Collectors;
 
 public final class ServletJsonUtils {
     private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -19,6 +21,7 @@ public final class ServletJsonUtils {
         response.setContentType("application/json");
         try {
             String json = objectMapper.writeValueAsString(object);
+            System.err.println("Response: " + json);
             PrintWriter out = response.getWriter();
             out.print(json);
             out.flush();
@@ -30,7 +33,9 @@ public final class ServletJsonUtils {
 
     public static <T> T objectFromJsonRequest(HttpServletRequest request, Class<T> aClass) {
         try {
-            return objectMapper.readValue(request.getReader(), aClass);
+            String string = request.getReader().lines().collect(Collectors.joining());
+            System.err.println("Request: " + string);
+            return objectMapper.readValue(string, aClass);
         } catch (IOException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

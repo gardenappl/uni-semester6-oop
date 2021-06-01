@@ -12,12 +12,12 @@ import java.math.BigDecimal;
 @WebServlet(value = "/get-cost")
 public class GetCostServlet extends HttpServlet {
     private static class Request {
-        int carId;
-        int days;
+        public int carId;
+        public int days;
     }
 
     private static class Response {
-        String hrnCost;
+        public final String hrnCost;
         Response(String hrnCost) {
             this.hrnCost = hrnCost;
         }

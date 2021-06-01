@@ -14,22 +14,26 @@ public class CarController {
     private CarController() {}
 
     public List<Car> getAvailableCars() {
-        ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
-        return CarDao.INSTANCE.getAllFreeCars(connection);
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return CarDao.INSTANCE.getAllFreeCars(connection);
+        }
     }
 
     public Car getCar(int id) {
-        ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
-        return CarDao.INSTANCE.getCar(connection, id);
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return CarDao.INSTANCE.getCar(connection, id);
+        }
     }
 
     public BigDecimal getCost(int carId, int days) {
-        ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
-        return CarDao.INSTANCE.getCar(connection, carId).getHrnPerDay().multiply(BigDecimal.valueOf(days));
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return CarDao.INSTANCE.getCar(connection, carId).getHrnPerDay().multiply(BigDecimal.valueOf(days));
+        }
     }
 
     public List<Car> getCarForUser(long userId) {
-        ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
-        return CarDao.INSTANCE.getCarsForUser(connection, userId);
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return CarDao.INSTANCE.getCarsForUser(connection, userId);
+        }
     }
 }

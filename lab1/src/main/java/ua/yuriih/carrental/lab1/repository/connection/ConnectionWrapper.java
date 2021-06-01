@@ -2,11 +2,12 @@ package ua.yuriih.carrental.lab1.repository.connection;
 
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionPool;
 
+import java.io.Closeable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class ConnectionWrapper {
+public class ConnectionWrapper implements Closeable {
     private final PreparedStatement beginTransactionStatement;
     private final PreparedStatement commitTransactionStatement;
     private final PreparedStatement rollbackTransactionStatement;
@@ -59,6 +60,7 @@ public class ConnectionWrapper {
         }
     }
 
+    @Override
     public void close() {
         synchronized (pool) {
             if (!isClosed) {

@@ -14,11 +14,11 @@ import java.util.List;
 @WebServlet(value = "/my-cars", name = "getUserCarsServlet")
 public class GetUserCarsServlet extends HttpServlet {
     private static class Request {
-        long token;
+        public long token;
     }
 
     private static class Response {
-        Car[] cars;
+        public final Car[] cars;
 
         Response(Car[] cars) {
             this.cars = cars;
@@ -26,7 +26,7 @@ public class GetUserCarsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
 
         long userId = UserController.INSTANCE.getUserIdFromToken(request.token);

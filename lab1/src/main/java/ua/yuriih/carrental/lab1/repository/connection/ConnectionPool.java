@@ -33,10 +33,12 @@ public final class ConnectionPool {
     }
 
     private Connection createConnection() {
+        System.err.println("Creating connection");
         try {
+            Class.forName("org.postgresql.Driver");
             return DriverManager.getConnection("jdbc:postgresql://localhost:5432/oop", "oop", "");
-        } catch (SQLException sqlException) {
-            throw new RuntimeException(sqlException);
+        } catch (SQLException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
         }
     }
 }

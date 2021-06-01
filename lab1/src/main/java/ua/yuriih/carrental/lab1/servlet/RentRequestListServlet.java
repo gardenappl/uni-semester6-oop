@@ -20,12 +20,12 @@ import java.util.List;
 @WebServlet(value = "/list-requests", name = "listRequests")
 public class RentRequestListServlet extends HttpServlet {
     private static class Request {
-        long token;
-        int status;
+        public long token;
+        public int status;
     }
 
     private static class Response {
-        RentRequest[] requests;
+        public final RentRequest[] requests;
 
         Response(RentRequest[] requests) {
             this.requests = requests;
@@ -33,7 +33,7 @@ public class RentRequestListServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
 
         if (!UserController.INSTANCE.isAdminToken(request.token)) {

@@ -14,12 +14,12 @@ import java.util.List;
 @WebServlet(value = "/cars", name = "carsServlet")
 public class ListCarsServlet extends HttpServlet {
     private static class Request {
-        boolean getAllAvailableCars;
-        Integer carId;
+        public boolean getAllAvailableCars;
+        public Integer carId;
     }
 
     private static class Response {
-        Car[] cars;
+        public final Car[] cars;
 
         Response(Car[] cars) {
             this.cars = cars;
@@ -27,7 +27,7 @@ public class ListCarsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
 
         Car[] cars;

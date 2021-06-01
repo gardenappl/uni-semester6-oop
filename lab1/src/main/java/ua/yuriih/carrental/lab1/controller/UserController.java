@@ -22,50 +22,52 @@ public final class UserController {
     }
 
     public boolean isAdminToken(long token) {
-        ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
-
-        Long userId = tokensToUserIds.get(token);
-        if (userId == null)
-            return false;
-        User user = UserDao.INSTANCE.getUser(connection, userId);
-        if (user == null)
-            return false;
-        return user.isAdmin();
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            Long userId = tokensToUserIds.get(token);
+            if (userId == null)
+                return false;
+            User user = UserDao.INSTANCE.getUser(connection, userId);
+            if (user == null)
+                return false;
+            return user.isAdmin();
+        }
     }
 
     public Long registerAndLogIn(long passportId, String username, String password) {
-        ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
 
-        return connection.doTransaction(() -> {
-            User user = UserDao.INSTANCE.getUserByUsername(connection, username);
+            return connection.doTransaction(() -> {
+                User user = UserDao.INSTANCE.getUserByUsername(connection, username);
 
-            if (user == null) {
-                UserDao.INSTANCE.insertUser(connection, passportId, username, password);
-            }
-            return logIn(username, password);
-        });
+                if (user == null) {
+                    UserDao.INSTANCE.insertUser(connection, passportId, username, password);
+                }
+                return logIn(username, password);
+            });
+        }
     }
 
     public Long logIn(String username, String password) {
-        ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
 
-        User user = UserDao.INSTANCE.getUserByUsername(connection, username);
+            User user = UserDao.INSTANCE.getUserByUsername(connection, username);
 
-        if (user == null)
-            return null;
-        if (!password.equals(user.getPassword()))
-            return null;
+            if (user == null)
+                return null;
+            if (!password.equals(user.getPassword()))
+                return null;
 
-        synchronized (userIdsToTokens) {
-            Long token = userIdsToTokens.getOrDefault(user.getPassportId(), null);
+            synchronized (userIdsToTokens) {
+                Long token = userIdsToTokens.getOrDefault(user.getPassportId(), null);
 
-            if (token == null) {
-                token = RNG.nextLong();
-                userIdsToTokens.put(user.getPassportId(), token);
-                tokensToUserIds.put(token, user.getPassportId());
+                if (token == null) {
+                    token = RNG.nextLong();
+                    userIdsToTokens.put(user.getPassportId(), token);
+                    tokensToUserIds.put(token, user.getPassportId());
+                }
+
+                return token;
             }
-
-            return token;
         }
     }
 }

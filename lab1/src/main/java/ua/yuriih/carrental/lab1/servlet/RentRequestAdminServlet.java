@@ -20,15 +20,15 @@ public class RentRequestAdminServlet extends HttpServlet {
     private static final String ACTION_END_SUCCESSFULLY = "end";
 
     private static class Request {
-        long token;
-        int requestId;
-        String action;
-        String actionMessage;
-        String repairCostHrn;
+        public long token;
+        public int requestId;
+        public String action;
+        public String actionMessage;
+        public String repairCostHrn;
     }
 
     private static class Response {
-        boolean success;
+        public final boolean success;
 
         Response(boolean success) {
             this.success = success;
