@@ -24,21 +24,27 @@ public class RentController {
         return RentRequestDao.INSTANCE.getAllRequestsWithStatus(connection, status);
     }
 
-    public RentRequest addNewPending(int userId, int carId, int days, LocalDate startDate) {
+    public RentRequest addNewPending(long userId, int carId, int days, LocalDate startDate, BigDecimal hrnAmount) {
         ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
-        return RentRequestDao.INSTANCE.insert(
-                connection,
-                RentRequest.STATUS_PENDING,
-                null,
-                userId,
-                carId,
-                days,
-                startDate,
-                null
-        );
+        RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
+        CarDao carDao = CarDao.INSTANCE;
+        PaymentDao paymentDao = PaymentDao.INSTANCE;
+
+
+        return connection.doTransaction(() -> {
+            Car car = carDao.getCar(connection, carId);
+
+            if (hrnAmount.compareTo(car.getHrnPerDay().multiply(BigDecimal.valueOf(days))) < 0)
+                throw new IllegalArgumentException("Payment amount is not high enough");
+
+            RentRequest request = rentRequestDao.insert(connection, RentRequest.STATUS_PENDING, "", userId, carId, days, startDate, null);
+            paymentDao.insertPayment(connection, hrnAmount, request.getId(), false);
+
+            return request;
+        });
     }
 
-    private RentRequest approve(int id) {
+    public RentRequest approve(int id) {
         ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
         RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
         UserDao userDao = UserDao.INSTANCE;
@@ -53,13 +59,13 @@ public class RentController {
 
             RentRequest newRequest = new RentRequest(
                     id,
-                    RentRequest.STATUS_NEEDS_PAYMENT,
+                    RentRequest.STATUS_ACTIVE,
                     "",
                     request.getUserId(),
                     request.getDays(),
                     request.getCarId(),
                     request.getStartDate(),
-                    request.getPaymentCost()
+                    request.getRepairCost()
             );
 
             rentRequestDao.update(connection, newRequest);
@@ -106,7 +112,7 @@ public class RentController {
                     request.getDays(),
                     request.getCarId(),
                     request.getStartDate(),
-                    request.getPaymentCost()
+                    request.getRepairCost()
             );
 
             dao.update(connection, newRequest);
@@ -115,42 +121,7 @@ public class RentController {
         });
     }
 
-    public RentRequest pay(int id, BigDecimal amount) {
-        ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
-        RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-        CarDao carDao = CarDao.INSTANCE;
-        PaymentDao paymentDao = PaymentDao.INSTANCE;
-
-
-        return connection.doTransaction(() -> {
-            RentRequest request = rentRequestDao.getRequest(connection, id);
-            if (request == null || request.getStatus() != RentRequest.STATUS_NEEDS_PAYMENT)
-                throw new IllegalArgumentException("Bad rent request ID");
-
-            Car car = carDao.getCar(connection, request.getCarId());
-
-            if (amount.compareTo(car.getHrnPerDay().multiply(BigDecimal.valueOf(request.getDays()))) < 0)
-                throw new IllegalArgumentException("Amount is not high enough");
-
-            RentRequest newRequest = new RentRequest(
-                    id,
-                    RentRequest.STATUS_ACTIVE,
-                    "",
-                    request.getUserId(),
-                    request.getDays(),
-                    request.getCarId(),
-                    request.getStartDate(),
-                    request.getPaymentCost()
-            );
-
-            rentRequestDao.update(connection, newRequest);
-            paymentDao.insertPayment(connection, amount, id, false);
-
-            return newRequest;
-        });
-    }
-
-    private RentRequest endSuccessfully(int id) {
+    public RentRequest endSuccessfully(int id) {
         ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
         RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
         UserDao userDao = UserDao.INSTANCE;
@@ -171,7 +142,7 @@ public class RentController {
                     request.getDays(),
                     request.getCarId(),
                     request.getStartDate(),
-                    request.getPaymentCost()
+                    request.getRepairCost()
             );
 
             rentRequestDao.update(connection, newRequest);
@@ -199,10 +170,11 @@ public class RentController {
         });
     }
 
-    private RentRequest setNeedsRepair(int id, String message, BigDecimal paymentCost) {
+    public RentRequest setNeedsRepair(int id, String message, BigDecimal paymentCost) {
         ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
         RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
         UserDao userDao = UserDao.INSTANCE;
+        PaymentDao paymentDao = PaymentDao.INSTANCE;
 
         return connection.doTransaction(() -> {
             RentRequest request = rentRequestDao.getRequest(connection, id);
@@ -233,11 +205,13 @@ public class RentController {
                     user.isAdmin()
             ));
 
+            paymentDao.insertPayment(connection, paymentCost.negate(), id, true);
+
             return newRequest;
         });
     }
 
-    private RentRequest payForRepair(int id, BigDecimal hrnAmount) {
+    public RentRequest payForRepair(int id, BigDecimal hrnAmount) {
         ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection();
         RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
         CarDao carDao = CarDao.INSTANCE;
@@ -249,7 +223,7 @@ public class RentController {
             if (request == null || request.getStatus() != RentRequest.STATUS_REPAIR_NEEDED)
                 throw new IllegalArgumentException("Bad rent request ID");
 
-            if (hrnAmount.compareTo(request.getPaymentCost()) < 0)
+            if (hrnAmount.compareTo(request.getRepairCost()) < 0)
                 throw new IllegalArgumentException("Amount is not high enough");
 
             RentRequest newRequest = new RentRequest(

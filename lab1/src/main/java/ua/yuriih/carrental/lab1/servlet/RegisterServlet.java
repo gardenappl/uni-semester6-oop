@@ -11,13 +11,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @WebServlet(value = "/register", name = "registerServlet")
 public class RegisterServlet extends HttpServlet {
     private static class Request {
+        long passportId;
         String name;
         String password;
     }
 
     private static class Response {
-        Integer token;
-        Response(Integer token) {
+        Long token;
+        Response(Long token) {
             this.token = token;
         }
     }
@@ -26,7 +27,7 @@ public class RegisterServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
 
-        Integer token = UserController.INSTANCE.registerAndLogIn(request.name, request.password);
+        Long token = UserController.INSTANCE.registerAndLogIn(request.passportId, request.name, request.password);
 
         ServletJsonUtils.objectToJsonResponse(new Response(token), resp);
     }

@@ -65,7 +65,7 @@ public final class RentRequestDao {
             statement.setInt(5, request.getDays());
             statement.setObject(6, request.getStartDate());
             statement.setInt(7, request.getId());
-            statement.setBigDecimal(8, request.getPaymentCost());
+            statement.setBigDecimal(8, request.getRepairCost());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -74,7 +74,7 @@ public final class RentRequestDao {
         }
     }
 
-    public RentRequest insert(ConnectionWrapper connection, int status, String message, int userId,
+    public RentRequest insert(ConnectionWrapper connection, int status, String message, long userId,
                               int carId, int days, LocalDate startDate, BigDecimal paymentCost) {
         String sql = "INSERT INTO requests" +
                 " VALUES (DEFAULT, ?, ?, ?, ?, ?, ?, ?, ?)" +
@@ -83,7 +83,7 @@ public final class RentRequestDao {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, status);
             statement.setString(2, message);
-            statement.setInt(3, userId);
+            statement.setLong(3, userId);
             statement.setInt(4, carId);
             statement.setInt(5, days);
             statement.setObject(6, startDate);

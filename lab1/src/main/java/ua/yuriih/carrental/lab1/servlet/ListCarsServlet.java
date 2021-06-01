@@ -12,7 +12,7 @@ import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
 import java.util.List;
 
 @WebServlet(value = "/cars", name = "carsServlet")
-public class CarsServlet extends HttpServlet {
+public class ListCarsServlet extends HttpServlet {
     private static class Request {
         boolean getAllAvailableCars;
         Integer carId;
@@ -27,7 +27,7 @@ public class CarsServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) {
         Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
 
         Car[] cars;

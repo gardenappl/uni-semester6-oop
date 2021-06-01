@@ -4,20 +4,22 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ua.yuriih.carrental.lab1.controller.UserController;
+import ua.yuriih.carrental.lab1.controller.CarController;
 import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
 
-@WebServlet(value = "/login", name = "loginServlet")
-public class LogInServlet extends HttpServlet {
+import java.math.BigDecimal;
+
+@WebServlet(value = "/get-cost")
+public class GetCostServlet extends HttpServlet {
     private static class Request {
-        String name;
-        String password;
+        int carId;
+        int days;
     }
 
     private static class Response {
-        Long token;
-        Response(Long token) {
-            this.token = token;
+        String hrnCost;
+        Response(String hrnCost) {
+            this.hrnCost = hrnCost;
         }
     }
 
@@ -25,8 +27,8 @@ public class LogInServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
         Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
 
-        Long token = UserController.INSTANCE.logIn(request.name, request.password);
+        BigDecimal hrnCost = CarController.INSTANCE.getCost(request.carId, request.days);
 
-        ServletJsonUtils.objectToJsonResponse(new Response(token), resp);
+        ServletJsonUtils.objectToJsonResponse(new Response(hrnCost.toString()), resp);
     }
 }

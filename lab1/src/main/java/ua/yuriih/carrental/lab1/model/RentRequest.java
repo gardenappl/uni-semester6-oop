@@ -13,16 +13,15 @@ public final class RentRequest {
     private final int carId;
     private final LocalDate startDate;
     private final LocalDate endDate;
-    private final BigDecimal paymentCost;
+    private final BigDecimal repairCost;
 
     public static final int STATUS_PENDING = 0;
     public static final int STATUS_DENIED = 1;
-    public static final int STATUS_NEEDS_PAYMENT = 3;
     public static final int STATUS_ACTIVE = 3;
     public static final int STATUS_REPAIR_NEEDED = 4;
     public static final int STATUS_ENDED = 5;
 
-    public RentRequest(int id, int status, String statusMessage, long userId, int days, int carId, LocalDate startDate, BigDecimal paymentCost) {
+    public RentRequest(int id, int status, String statusMessage, long userId, int days, int carId, LocalDate startDate, BigDecimal repairCost) {
         this.id = id;
         this.status = status;
         this.statusMessage = statusMessage;
@@ -30,7 +29,7 @@ public final class RentRequest {
         this.days = days;
         this.carId = carId;
         this.startDate = startDate;
-        this.paymentCost = paymentCost;
+        this.repairCost = repairCost;
         this.endDate = startDate.plusDays(days);
     }
 
@@ -66,8 +65,8 @@ public final class RentRequest {
         return id;
     }
 
-    public BigDecimal getPaymentCost() {
-        return paymentCost;
+    public BigDecimal getRepairCost() {
+        return repairCost;
     }
 
     @Override
@@ -80,7 +79,7 @@ public final class RentRequest {
                 ", days=" + days +
                 ", carId=" + carId +
                 ", startDate=" + startDate +
-                ", paymentCost=" + paymentCost +
+                ", paymentCost=" + repairCost +
                 '}';
     }
 
@@ -89,11 +88,11 @@ public final class RentRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RentRequest that = (RentRequest) o;
-        return id == that.id && status == that.status && userId == that.userId && days == that.days && carId == that.carId && Objects.equals(statusMessage, that.statusMessage) && startDate.equals(that.startDate) && paymentCost.equals(that.paymentCost);
+        return id == that.id && status == that.status && userId == that.userId && days == that.days && carId == that.carId && Objects.equals(statusMessage, that.statusMessage) && startDate.equals(that.startDate) && repairCost.equals(that.repairCost);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, status, statusMessage, userId, days, carId, startDate, paymentCost);
+        return Objects.hash(id, status, statusMessage, userId, days, carId, startDate, repairCost);
     }
 }

@@ -89,4 +89,24 @@ public final class CarDao {
             throw new RuntimeException(e);
         }
     }
+
+    public List<Car> getCarsForUser(ConnectionWrapper connection, long userId) {
+        String sql = "SELECT * FROM cars WHERE current_user_id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setLong(1, userId);
+
+            ArrayList<Car> cars = new ArrayList<>();
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                cars.add(resultToCar(resultSet));
+            }
+
+            return cars;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
 }
