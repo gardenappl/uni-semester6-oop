@@ -1,29 +1,27 @@
 package ua.yuriih.carrental.lab1.servlet;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ua.yuriih.carrental.lab1.controller.CarController;
-import ua.yuriih.carrental.lab1.controller.RentController;
 import ua.yuriih.carrental.lab1.controller.UserController;
-import ua.yuriih.carrental.lab1.model.*;
-import ua.yuriih.carrental.lab1.repository.CarDao;
+import ua.yuriih.carrental.lab1.model.CarStatistic;
 import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
 
+import java.util.Collections;
 import java.util.List;
 
-@WebServlet(value = "/top-cars")
-public class TopCarsServlet extends HttpServlet {
+@WebServlet(value = "/popular-cars")
+public class PopularCarsServlet extends HttpServlet {
     private static class Request {
         public long token;
     }
 
     private static class Response {
-        public final CarStatistic.Profit[] carStatistics;
+        public final List<CarStatistic.RequestCount> carStatistics;
 
-        Response(CarStatistic.Profit[] carStatistics) {
+        Response(List<CarStatistic.RequestCount> carStatistics) {
             this.carStatistics = carStatistics;
         }
     }
@@ -33,14 +31,10 @@ public class TopCarsServlet extends HttpServlet {
         Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
 
         if (!UserController.INSTANCE.isAdminToken(request.token)) {
-            ServletJsonUtils.objectToJsonResponse(new Response(new CarStatistic.Profit[0]), resp);
+            ServletJsonUtils.objectToJsonResponse(new Response(Collections.emptyList()), resp);
             return;
         }
 
-        List<CarStatistic.Profit> carStatisticsList = CarController.INSTANCE.getMostProfitableCars();
-        CarStatistic.Profit[] carStatistics = new CarStatistic.Profit[carStatisticsList.size()];
-        carStatisticsList.toArray(carStatistics);
-
-        ServletJsonUtils.objectToJsonResponse(new Response(carStatistics), resp);
+        ServletJsonUtils.objectToJsonResponse(new Response(CarController.INSTANCE.getMostPopularCars()), resp);
     }
 }

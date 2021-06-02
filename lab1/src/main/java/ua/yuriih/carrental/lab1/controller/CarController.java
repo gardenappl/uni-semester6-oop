@@ -26,9 +26,15 @@ public class CarController {
         }
     }
 
-    public List<CarStatistic> getMostProfitableCars() {
+    public List<CarStatistic.Profit> getMostProfitableCars() {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
             return CarDao.INSTANCE.getMostProfitableCars(connection);
+        }
+    }
+
+    public List<CarStatistic.RequestCount> getMostPopularCars() {
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return CarDao.INSTANCE.getMostPopularCars(connection);
         }
     }
 }

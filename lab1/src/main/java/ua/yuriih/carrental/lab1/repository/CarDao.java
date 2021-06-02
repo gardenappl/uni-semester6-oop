@@ -29,13 +29,22 @@ public final class CarDao {
         return new Car(id, model, manufacturer, hrnPerDay, currentUserId, thumbnailUrl);
     }
 
-    private static CarStatistic resultToCarStatistic(ResultSet resultSet) throws SQLException {
+    private static CarStatistic.Profit resultToProfitStatistic(ResultSet resultSet) throws SQLException {
         int id = resultSet.getInt("id");
         String model = resultSet.getString("model");
         String manufacturer = resultSet.getString("manufacturer");
         BigDecimal hrnProfit = resultSet.getBigDecimal("sum");
 
-        return new CarStatistic(id, manufacturer, model, hrnProfit);
+        return new CarStatistic.Profit(id, manufacturer, model, hrnProfit);
+    }
+
+    private static CarStatistic.RequestCount resultToRequestCountStatistic(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
+        String model = resultSet.getString("model");
+        String manufacturer = resultSet.getString("manufacturer");
+        int requestCount = resultSet.getInt("requests");
+
+        return new CarStatistic.RequestCount(id, manufacturer, model, requestCount);
     }
 
     public Car getCar(ConnectionWrapper connection, int id) {
@@ -98,7 +107,7 @@ public final class CarDao {
     }
 
 
-    public List<CarStatistic> getMostProfitableCars(ConnectionWrapper connection) {
+    public List<CarStatistic.Profit> getMostProfitableCars(ConnectionWrapper connection) {
         String sql = """
                 SELECT cars.id, model, manufacturer, SUM (hrn_amount) FROM cars
                 INNER JOIN payments ON (
@@ -111,11 +120,34 @@ public final class CarDao {
                 ORDER BY SUM(hrn_amount) DESC""";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            ArrayList<CarStatistic> cars = new ArrayList<>();
+            ArrayList<CarStatistic.Profit> cars = new ArrayList<>();
 
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
-                cars.add(resultToCarStatistic(resultSet));
+                cars.add(resultToProfitStatistic(resultSet));
+            }
+
+            return cars;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public List<CarStatistic.RequestCount> getMostPopularCars(ConnectionWrapper connection) {
+        String sql = """
+            SELECT cars.id, model, manufacturer, COUNT (DISTINCT r.id) AS requests
+            FROM cars INNER JOIN requests r on cars.id = r.car_id
+            GROUP BY cars.id;
+            """;
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            ArrayList<CarStatistic.RequestCount> cars = new ArrayList<>();
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                cars.add(resultToRequestCountStatistic(resultSet));
             }
 
             return cars;
