@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { fetchPostJson } from "../utils.js";
 import API_SERVER, { STATUS_REPAIR_NEEDED, STATUS_DENIED, STATUS_PENDING, STATUS_ACTIVE } from "../Constants.js";
 import { requestInfoToComponent } from "./request.jsx";
-import { carToComponent } from "./car.jsx";
 
 class MyStatus extends Component {
 	constructor(props) {

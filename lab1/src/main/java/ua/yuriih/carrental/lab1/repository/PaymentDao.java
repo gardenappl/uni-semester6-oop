@@ -17,9 +17,9 @@ public class PaymentDao {
         int id = resultSet.getInt("id");
         BigDecimal hrnAmount = resultSet.getBigDecimal("hrn_amount");
         int requestId = resultSet.getInt("request_id");
-        boolean isRepair = resultSet.getBoolean("is_repair");
+        int type = resultSet.getInt("type");
 
-        return new Payment(id, hrnAmount, requestId, isRepair);
+        return new Payment(id, hrnAmount, requestId, type);
     }
 
     public Payment getPayment(ConnectionWrapper connection, int id) {
@@ -40,7 +40,26 @@ public class PaymentDao {
         }
     }
 
-    public Payment insertPayment(ConnectionWrapper connection, BigDecimal hrnAmount, int requestId, boolean isRepair) {
+    public Payment getInitialPaymentForRequest(ConnectionWrapper connection, int requestId) {
+        String sql = "SELECT * FROM payments WHERE request_id = ? AND TYPE = ? LIMIT 1";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, requestId);
+            statement.setInt(2, Payment.TYPE_REVENUE);
+
+            ResultSet resultSet = statement.executeQuery();
+
+            if (resultSet.next())
+                return resultToPayment(resultSet);
+            else
+                return null;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public Payment insertPayment(ConnectionWrapper connection, BigDecimal hrnAmount, int requestId, int type) {
         String sql = "INSERT INTO payments" +
                 " VALUES (DEFAULT, ?, ?, ?)" +
                 " RETURNING id";
@@ -48,10 +67,10 @@ public class PaymentDao {
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setBigDecimal(1, hrnAmount);
             statement.setInt(2, requestId);
-            statement.setBoolean(3, isRepair);
+            statement.setInt(3, type);
             ResultSet result = statement.executeQuery();
             if (result.next()) {
-                return new Payment(result.getInt("id"), hrnAmount, requestId, isRepair);
+                return new Payment(result.getInt("id"), hrnAmount, requestId, type);
             } else {
                 return null;
             }

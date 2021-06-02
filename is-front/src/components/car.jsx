@@ -1,12 +1,13 @@
 import { NavLink } from "react-router-dom";
 
 function Car(props) {
+	const priceFormat = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH' });
 	return <NavLink to={`car/${props.carId}`}>
 		<div class="car">
-			<img src={props.thumbnailUrl}/>
+			<img width="200dp" height="100%" src={props.thumbnailUrl}/>
 			<span class="car-name">{props.manufacturer} {props.model}</span>
 			<br />
-			<span class="car-cost">{props.hrnPerDay}</span>
+			<span class="car-cost"><b>{priceFormat.format(props.hrnPerDay)}</b> per day</span>
 		</div>
 	</NavLink>
 }

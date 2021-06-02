@@ -42,10 +42,12 @@ class RequestInfo extends Component {
 
 	onEnd() {
 		console.log(this.props);
+		const sum = prompt("Enter maintenance cost (e.g. '250' for 250 UAH)");
 		fetchPostJson(API_SERVER + "/admin-request", {
 			token: localStorage.getItem('token'),
 			requestId: this.props.requestId,
-			action: 'end'
+			action: 'end',
+			repairCostHrn: sum
 		}).then((result) => {
 			if (result['success'])
 				this.props.onStatusChange(this.props.requestId);

@@ -16,10 +16,10 @@ function App() {
   return (
 	  <HashRouter>
 
- <div>
+ <div class="App">
           <h1>Car Rental</h1>
           <ul className="header">
-	    <li><NavLink to="/">Main</NavLink></li>
+	    <li><NavLink exact to="/">Main</NavLink></li>
 	    <li><NavLink to="/cars">Cars</NavLink></li>
             <li><NavLink to="/login">Log In</NavLink></li>
 	    {localStorage.getItem('isAdmin') === 'true' && <li><NavLink to="/admin">Admin</NavLink></li>}
