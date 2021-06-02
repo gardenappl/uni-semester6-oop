@@ -13,6 +13,7 @@ function Car(props) {
 
 function carToComponent(car) {
 	return <Car
+		key={car.id}
 		carId={car.id}
 		manufacturer={car.manufacturer} 
 		model={car.model}

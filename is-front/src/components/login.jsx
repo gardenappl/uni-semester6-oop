@@ -22,10 +22,11 @@ class Login extends Component {
 	handleSubmit(event) {
 		console.log("Logging in");
 		fetchPostJson(API_SERVER + "/login", this.state)
-		.then((json) => {
-			if (typeof json['token'] === 'number') {
-				localStorage.setItem("token", json['token']);
-				console.log(`Got token ${json['token']}`);
+		.then((result) => {
+			if (result['token'].length > 0) {
+				localStorage.setItem("token", result['token']);
+				localStorage.setItem("isAdmin", result['isAdmin']);
+				console.log(`Got token ${result['token']}`);
 				withRouter(({ history }) => {
 					history.push('/');
 				});

@@ -62,6 +62,7 @@ public final class UserController {
 
                 if (token == null) {
                     token = RNG.nextLong();
+                    System.err.println("Passport ID: " + user.getPassportId() + ", token: " + token);
                     userIdsToTokens.put(user.getPassportId(), token);
                     tokensToUserIds.put(token, user.getPassportId());
                 }

@@ -22,15 +22,16 @@ class Register extends Component {
 	}
 	handleSubmit(event) {
 		fetchPostJson(API_SERVER + "/register", this.state)
-		.then((json) => {
-			if (typeof json['token'] === 'number') {
-				localStorage.setItem("token", json['token']);
-				console.log(`Got token ${json['token']}`);
+		.then((result) => {
+			if (result['token'].length > 0) {
+				localStorage.setItem("token", result['token']);
+				localStorage.setItem("isAdmin", result['isAdmin']);
+				console.log(`Got token ${result['token']}`);
 				withRouter(({ history }) => {
 					history.push('/');
 				});
 			} else {
-				alert("This username or passport ID is already taken.");
+				alert("This passport ID or username is already taken");
 			}
 		});
 		event.preventDefault();

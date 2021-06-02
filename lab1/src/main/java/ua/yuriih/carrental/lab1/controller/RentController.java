@@ -2,6 +2,7 @@ package ua.yuriih.carrental.lab1.controller;
 
 import ua.yuriih.carrental.lab1.model.Car;
 import ua.yuriih.carrental.lab1.model.RentRequest;
+import ua.yuriih.carrental.lab1.model.RequestInfo;
 import ua.yuriih.carrental.lab1.model.User;
 import ua.yuriih.carrental.lab1.repository.CarDao;
 import ua.yuriih.carrental.lab1.repository.PaymentDao;
@@ -19,9 +20,15 @@ public class RentController {
 
     private RentController() {}
 
-    public List<RentRequest> getRequestsWithStatus(int status) {
+    public List<RequestInfo> getRequestsWithStatus(int status) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
             return RentRequestDao.INSTANCE.getAllRequestsWithStatus(connection, status);
+        }
+    }
+
+    public List<RequestInfo> getActiveOutdatedRequests() {
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return RentRequestDao.INSTANCE.getOutatedActiveRequests(connection);
         }
     }
 
@@ -71,6 +78,7 @@ public class RentController {
                 );
 
                 rentRequestDao.update(connection, newRequest);
+                rentRequestDao.deleteALlPendingForCarId(connection, request.getCarId());
 
                 User user = userDao.getUser(connection, request.getUserId());
                 userDao.update(connection, new User(

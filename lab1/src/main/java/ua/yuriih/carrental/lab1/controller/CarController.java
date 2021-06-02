@@ -25,12 +25,6 @@ public class CarController {
         }
     }
 
-    public BigDecimal getCost(int carId, int days) {
-        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            return CarDao.INSTANCE.getCar(connection, carId).getHrnPerDay().multiply(BigDecimal.valueOf(days));
-        }
-    }
-
     public List<Car> getCarForUser(long userId) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
             return CarDao.INSTANCE.getCarsForUser(connection, userId);

@@ -50,7 +50,7 @@ public final class UserDao {
     }
 
     public User getUser(ConnectionWrapper connection, long passportId) {
-        String sql = "SELECT * FROM users WHERE id = ? LIMIT 1";
+        String sql = "SELECT * FROM users WHERE passport_id = ? LIMIT 1";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, passportId);
@@ -69,19 +69,18 @@ public final class UserDao {
 
     public void update(ConnectionWrapper connection, User user) {
         String sql = "UPDATE users" +
-                " SET passport_id = ?," +
-                "     name = ?," +
+                " SET name = ?," +
                 "     password = ?," +
                 "     current_car = ?," +
-                "     is_admin = ?," +
-                " WHERE id = ?";
+                "     is_admin = ?" +
+                " WHERE passport_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, user.getPassportId());
-            statement.setString(2, user.getName());
-            statement.setString(3, user.getPassword());
-            statement.setInt(4, user.getCurrentCar());
-            statement.setBoolean(5, user.isAdmin());
+            statement.setString(1, user.getName());
+            statement.setString(2, user.getPassword());
+            statement.setInt(3, user.getCurrentCar());
+            statement.setBoolean(4, user.isAdmin());
+            statement.setLong(5, user.getPassportId());
 
             statement.executeUpdate();
         } catch (SQLException e) {

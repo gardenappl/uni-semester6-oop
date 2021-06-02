@@ -9,6 +9,7 @@
         <webroots>
           <root url="file://$USER_HOME$/windows/Yurik/uni/semester6/oop/oop-projects/lab1/src/main/web" relative="/" />
         </webroots>
+        <sourceRoots />
       </configuration>
     </facet>
   </component>

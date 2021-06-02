@@ -49,21 +49,20 @@ public final class CarDao {
 
     public void update(ConnectionWrapper connection, Car car) {
         String sql = "UPDATE cars" +
-                " SET id = ?," +
-                "     model = ?," +
+                " SET model = ?," +
                 "     manufacturer = ?," +
                 "     hrn_per_day = ?," +
                 "     current_user_id = ?," +
-                "     thumbnail_url = ?," +
+                "     thumbnail_url = ?" +
                 " WHERE id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
-            statement.setLong(1, car.getId());
-            statement.setString(2, car.getModel());
-            statement.setString(3, car.getManufacturer());
-            statement.setBigDecimal(4, car.getHrnPerDay());
-            statement.setLong(5, car.getCurrentUserId());
+            statement.setString(1, car.getModel());
+            statement.setString(2, car.getManufacturer());
+            statement.setBigDecimal(3, car.getHrnPerDay());
+            statement.setLong(4, car.getCurrentUserId());
             statement.setString(5, car.getThumbnailUrl());
+            statement.setInt(6, car.getId());
 
             statement.executeUpdate();
         } catch (SQLException e) {

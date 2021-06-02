@@ -28,7 +28,7 @@ class CarInfo extends Component {
 			<img src={this.state.thumbnailUrl} />
 			<span class="price">Price: <b>{priceFormat.format(this.state.hrnPerDay)}</b> per day</span>
 			<br />
-			<NavLink to={`request/${lastSegment(window.location.href)}`}>Rent now</NavLink>
+			<NavLink to={`/request/${lastSegment(window.location.href)}`}>Rent now</NavLink>
 		</div>
 	}
 }

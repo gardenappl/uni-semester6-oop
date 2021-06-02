@@ -17,10 +17,12 @@ public class LogInServlet extends HttpServlet {
     }
 
     private static class Response {
-        public final Long token;
+        public final String token;
+        public final boolean isAdmin;
 
-        Response(Long token) {
+        Response(String token, boolean isAdmin) {
             this.token = token;
+            this.isAdmin = isAdmin;
         }
     }
 
@@ -30,6 +32,11 @@ public class LogInServlet extends HttpServlet {
 
         Long token = UserController.INSTANCE.logIn(request.username, request.password);
 
-        ServletJsonUtils.objectToJsonResponse(new Response(token), resp);
+        if (token != null) {
+            boolean isAdmin = UserController.INSTANCE.isAdminToken(token);
+            ServletJsonUtils.objectToJsonResponse(new Response(token.toString(), isAdmin), resp);
+        } else {
+            ServletJsonUtils.objectToJsonResponse(new Response("", false), resp);
+        }
     }
 }

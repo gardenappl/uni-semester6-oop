@@ -7,8 +7,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ua.yuriih.carrental.lab1.controller.RentController;
 import ua.yuriih.carrental.lab1.controller.UserController;
-import ua.yuriih.carrental.lab1.model.Car;
-import ua.yuriih.carrental.lab1.repository.RentRequestDao;
 import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
 
 import java.io.IOException;

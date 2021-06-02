@@ -8,10 +8,11 @@ async function fetchPostJson(url, object) {
 	}
 	const response = await fetch(url, options);
 	const text = await response.text();
+	console.log(`Response: ${text}`);
 	try {
 		return JSON.parse(text);
 	} catch (e) {
-		console.error("Could not parse response:" + text);
+		console.error("Could not parse response");
 		throw e;
 	}
 }
@@ -19,10 +20,11 @@ async function fetchPostJson(url, object) {
 async function fetchGetJson(url) {
 	const response = await fetch(url);
 	const text = await response.text();
+	console.log(`Response: ${text}`);
 	try {
 		return JSON.parse(text);
 	} catch (e) {
-		console.error("Could not parse response:" + text);
+		console.error("Could not parse response");
 		throw e;
 	}
 }
@@ -32,4 +34,8 @@ function lastSegment(url) {
 	return parts.pop() || parts.pop();  // handle potential trailing slash
 }
 
-export { fetchPostJson, fetchGetJson, lastSegment };
+function toLocalDateString(date) {
+	return date.toISOString().split('T')[0];
+}
+
+export { fetchPostJson, toLocalDateString, fetchGetJson, lastSegment };
