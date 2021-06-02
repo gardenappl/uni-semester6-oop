@@ -1,6 +1,7 @@
 package ua.yuriih.carrental.lab1.repository;
 
 import ua.yuriih.carrental.lab1.model.Car;
+import ua.yuriih.carrental.lab1.model.CarStatistic;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 
 import java.math.BigDecimal;
@@ -26,6 +27,15 @@ public final class CarDao {
         String thumbnailUrl = resultSet.getString("thumbnail_url");
 
         return new Car(id, model, manufacturer, hrnPerDay, currentUserId, thumbnailUrl);
+    }
+
+    private static CarStatistic resultToCarStatistic(ResultSet resultSet) throws SQLException {
+        int id = resultSet.getInt("id");
+        String model = resultSet.getString("model");
+        String manufacturer = resultSet.getString("manufacturer");
+        BigDecimal hrnProfit = resultSet.getBigDecimal("sum");
+
+        return new CarStatistic(id, manufacturer, model, hrnProfit);
     }
 
     public Car getCar(ConnectionWrapper connection, int id) {
@@ -78,6 +88,34 @@ public final class CarDao {
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()) {
                 cars.add(resultToCar(resultSet));
+            }
+
+            return cars;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public List<CarStatistic> getMostProfitableCars(ConnectionWrapper connection) {
+        String sql = """
+                SELECT cars.id, model, manufacturer, SUM (hrn_amount) FROM cars
+                INNER JOIN payments ON (
+                    EXISTS (
+                        SELECT * FROM requests
+                        WHERE payments.request_id = requests.id AND requests.car_id = cars.id
+                    )
+                )
+                GROUP BY cars.id
+                ORDER BY SUM(hrn_amount) DESC""";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            ArrayList<CarStatistic> cars = new ArrayList<>();
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                cars.add(resultToCarStatistic(resultSet));
             }
 
             return cars;

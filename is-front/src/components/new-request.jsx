@@ -43,7 +43,7 @@ class Request extends Component {
 			token: localStorage.getItem('token'),
 			carId: this.carId,
 			days: this.state.days,
-			startDate: this.state.startDate,
+			startDate: toLocalDateString(new Date()),
 			hrnAmount: String(this.state.cost)
 		})
 		.then((result) => {
@@ -61,25 +61,11 @@ class Request extends Component {
 	render() {
 		const priceFormat = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH' });
 
-		const maxStartDate = new Date();
-		maxStartDate.setDate(maxStartDate.getDate() + 10);
-
 		return <div>
 			<form onSubmit={this.handleSubmit}>
 				<label>
 					How many days?
 					<input type="number" min="1" max="31" name="days" onChange={this.handleChange} />
-				</label>
-				<br/>
-				<label>
-					Start date:
-					<input
-						type="date"
-						name="startDate"
-						min={toLocalDateString(new Date())}
-						max={toLocalDateString(maxStartDate)}
-						onChange={this.handleChange}
-					/>
 				</label>
 				<br/>
 				<div class="price">Total cost: <b>{priceFormat.format(this.state.cost)}</b></div>

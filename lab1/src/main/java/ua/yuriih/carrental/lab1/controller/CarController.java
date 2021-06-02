@@ -1,6 +1,7 @@
 package ua.yuriih.carrental.lab1.controller;
 
 import ua.yuriih.carrental.lab1.model.Car;
+import ua.yuriih.carrental.lab1.model.CarStatistic;
 import ua.yuriih.carrental.lab1.repository.CarDao;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionPool;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
@@ -22,6 +23,12 @@ public class CarController {
     public Car getCar(int id) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
             return CarDao.INSTANCE.getCar(connection, id);
+        }
+    }
+
+    public List<CarStatistic> getMostProfitableCars() {
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return CarDao.INSTANCE.getMostProfitableCars(connection);
         }
     }
 }

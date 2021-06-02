@@ -17,10 +17,9 @@ public final class ConnectionPool {
     public ConnectionWrapper getConnection() {
         Connection connection;
         synchronized (allConnections) {
-            if (allConnections.size() < MAX_CONNECTIONS) {
+            if (unusedConnections.size() == 0 && allConnections.size() < MAX_CONNECTIONS) {
                 connection = createConnection();
                 allConnections.add(connection);
-                unusedConnections.add(connection);
             } else {
                 connection = Objects.requireNonNull(unusedConnections.poll());
             }

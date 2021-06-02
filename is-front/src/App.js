@@ -11,6 +11,7 @@ import CarInfo from "./components/car-info.jsx";
 import Request from "./components/new-request.jsx";
 import RequestsAdmin from "./components/admin.jsx";
 import MyStatus from "./components/main.jsx";
+import AdminStats from "./components/stats.jsx";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
 	    <li><NavLink to="/cars">Cars</NavLink></li>
             <li><NavLink to="/login">Log In</NavLink></li>
 	    {localStorage.getItem('isAdmin') === 'true' && <li><NavLink to="/admin">Admin</NavLink></li>}
+	    {localStorage.getItem('isAdmin') === 'true' && <li><NavLink to="/stats">Stats</NavLink></li>}
           </ul>
           <div className="content">
             <Route path="/login" component={Login}/>
@@ -31,6 +33,7 @@ function App() {
             <Route path="/request" component={Request}/>
 	    <Route path="/admin" component={RequestsAdmin}/>
             <Route path="/cars" component={Cars}/>
+            <Route path="/stats" component={AdminStats}/>
             <Route exact path="/" component={MyStatus}/>
           </div>
         </div>
