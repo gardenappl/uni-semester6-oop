@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { toLocalDateString, fetchPostJson } from "../utils.js";
 import { NavLink } from "react-router-dom";
 import API_SERVER  from "../Constants.js";
+import paymentToComponent from "./payment.jsx";
 
 function PopularityStatistic(props) {
 	return <tr>
@@ -62,7 +63,9 @@ class AdminStats extends Component {
 			recentProfitableCars: [],
 			recentPopularCars: [],
 			topProfitableCars: [],
-			topPopularCars: []
+			topPopularCars: [],
+			allPayments: [],
+			recentPayments: []
 		}
 		this.getStats = this.getStats.bind(this);
 		this.handleChange = this.handleChange.bind(this);
@@ -110,6 +113,26 @@ class AdminStats extends Component {
 				recentPopularCars: result['carStatistics']
 			});
 		});
+
+		fetchPostJson(API_SERVER + "/all-payments", {
+			token: localStorage.getItem('token'),
+			since: this.state.since
+		})
+		.then((result) => {
+			console.log(result);
+			this.setState({
+				recentPayments: result['payments']
+			});
+		});
+		fetchPostJson(API_SERVER + "/all-payments", {
+			token: localStorage.getItem('token')
+		})
+		.then((result) => {
+			console.log(result);
+			this.setState({
+				allPayments: result['payments']
+			});
+		});
 	}
 
 	handleChange(event) {
@@ -150,6 +173,13 @@ class AdminStats extends Component {
 				})}
 			</table>
 
+			<h3>Payments:</h3>
+			<table class="payment-stats">
+				{this.state.recentPayments.map((payment) => {
+					return paymentToComponent(payment);
+				})}
+			</table>
+
 			<h2>All-time statistics</h2>
 
 			<h3>Most profitable cars:</h3>
@@ -163,6 +193,13 @@ class AdminStats extends Component {
 			<table class="car-stats">
 				{this.state.topPopularCars.map((carStatistic) => {
 					return popularityStatisticToComponent(carStatistic);
+				})}
+			</table>
+
+			<h3>Payments:</h3>
+			<table class="payment-stats">
+				{this.state.allPayments.map((payment) => {
+					return paymentToComponent(payment);
 				})}
 			</table>
 		</div>
