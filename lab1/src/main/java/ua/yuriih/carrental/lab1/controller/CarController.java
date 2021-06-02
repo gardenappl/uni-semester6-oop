@@ -24,10 +24,4 @@ public class CarController {
             return CarDao.INSTANCE.getCar(connection, id);
         }
     }
-
-    public List<Car> getCarForUser(long userId) {
-        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            return CarDao.INSTANCE.getCarsForUser(connection, userId);
-        }
-    }
 }

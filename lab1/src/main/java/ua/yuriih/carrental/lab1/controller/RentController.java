@@ -3,11 +3,9 @@ package ua.yuriih.carrental.lab1.controller;
 import ua.yuriih.carrental.lab1.model.Car;
 import ua.yuriih.carrental.lab1.model.RentRequest;
 import ua.yuriih.carrental.lab1.model.RequestInfo;
-import ua.yuriih.carrental.lab1.model.User;
 import ua.yuriih.carrental.lab1.repository.CarDao;
 import ua.yuriih.carrental.lab1.repository.PaymentDao;
 import ua.yuriih.carrental.lab1.repository.RentRequestDao;
-import ua.yuriih.carrental.lab1.repository.UserDao;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionPool;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 
@@ -26,9 +24,21 @@ public class RentController {
         }
     }
 
+    public List<RequestInfo> getRequestsWithStatusForUser(int status, long userId) {
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return RentRequestDao.INSTANCE.getUserRequestsWithStatus(connection, status, userId);
+        }
+    }
+
     public List<RequestInfo> getActiveOutdatedRequests() {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            return RentRequestDao.INSTANCE.getOutatedActiveRequests(connection);
+            return RentRequestDao.INSTANCE.getOutdatedActiveRequests(connection);
+        }
+    }
+
+    public List<RequestInfo> getActiveOutdatedRequests(long userId) {
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return RentRequestDao.INSTANCE.getOutdatedActiveRequests(connection, userId);
         }
     }
 
@@ -56,7 +66,6 @@ public class RentController {
     public RentRequest approve(int id) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
             RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-            UserDao userDao = UserDao.INSTANCE;
             CarDao carDao = CarDao.INSTANCE;
 
             return connection.doTransaction(() -> {
@@ -80,22 +89,13 @@ public class RentController {
                 rentRequestDao.update(connection, newRequest);
                 rentRequestDao.deleteALlPendingForCarId(connection, request.getCarId());
 
-                User user = userDao.getUser(connection, request.getUserId());
-                userDao.update(connection, new User(
-                        user.getPassportId(),
-                        user.getName(),
-                        user.getPassword(),
-                        request.getCarId(),
-                        user.isAdmin()
-                ));
-
                 Car car = carDao.getCar(connection, request.getCarId());
                 carDao.update(connection, new Car(
                         car.getId(),
                         car.getModel(),
                         car.getManufacturer(),
                         car.getHrnPerDay(),
-                        user.getPassportId(),
+                        request.getUserId(),
                         car.getThumbnailUrl()
                 ));
 
@@ -136,7 +136,6 @@ public class RentController {
     public RentRequest endSuccessfully(int id) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
             RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-            UserDao userDao = UserDao.INSTANCE;
             CarDao carDao = CarDao.INSTANCE;
 
             return connection.doTransaction(() -> {
@@ -159,15 +158,6 @@ public class RentController {
 
                 rentRequestDao.update(connection, newRequest);
 
-                User user = userDao.getUser(connection, request.getUserId());
-                userDao.update(connection, new User(
-                        user.getPassportId(),
-                        user.getName(),
-                        user.getPassword(),
-                        null,
-                        user.isAdmin()
-                ));
-
                 Car car = carDao.getCar(connection, request.getCarId());
                 carDao.update(connection, new Car(
                         car.getId(),
@@ -186,7 +176,6 @@ public class RentController {
     public RentRequest setNeedsRepair(int id, String message, BigDecimal paymentCost) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
             RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-            UserDao userDao = UserDao.INSTANCE;
             PaymentDao paymentDao = PaymentDao.INSTANCE;
 
             return connection.doTransaction(() -> {
@@ -208,15 +197,6 @@ public class RentController {
                 );
 
                 rentRequestDao.update(connection, newRequest);
-
-                User user = userDao.getUser(connection, request.getUserId());
-                userDao.update(connection, new User(
-                        user.getPassportId(),
-                        user.getName(),
-                        user.getPassword(),
-                        null,
-                        user.isAdmin()
-                ));
 
                 paymentDao.insertPayment(connection, paymentCost.negate(), id, true);
 

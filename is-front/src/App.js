@@ -10,6 +10,7 @@ import Cars from "./components/cars.jsx";
 import CarInfo from "./components/car-info.jsx";
 import Request from "./components/new-request.jsx";
 import RequestsAdmin from "./components/admin.jsx";
+import MyStatus from "./components/main.jsx";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <h1>Car Rental</h1>
           <ul className="header">
 	    <li><NavLink to="/">Main</NavLink></li>
+	    <li><NavLink to="/cars">Cars</NavLink></li>
             <li><NavLink to="/login">Log In</NavLink></li>
 	    {localStorage.getItem('isAdmin') === 'true' && <li><NavLink to="/admin">Admin</NavLink></li>}
           </ul>
@@ -28,7 +30,8 @@ function App() {
             <Route path="/car" component={CarInfo}/>
             <Route path="/request" component={Request}/>
 	    <Route path="/admin" component={RequestsAdmin}/>
-            <Route exact path="/" component={Cars}/>
+            <Route path="/cars" component={Cars}/>
+            <Route exact path="/" component={MyStatus}/>
           </div>
         </div>
 

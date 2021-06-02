@@ -41,9 +41,10 @@ public final class RentRequestDao {
         String carManufacturer = resultSet.getString("manufacturer");
         String carModel = resultSet.getString("model");
         BigDecimal hrnPerDay = resultSet.getBigDecimal("hrn_per_day");
+        String message = resultSet.getString("message");
+        BigDecimal repairCost = resultSet.getBigDecimal("payment_cost");
 
-
-        return new RequestInfo(requestId, status, passportId, days, carId, startDate, carManufacturer, carModel, hrnPerDay);
+        return new RequestInfo(requestId, status, message, passportId, days, carId, startDate, carManufacturer, carModel, hrnPerDay, repairCost);
     }
 
     public RentRequest getRequest(ConnectionWrapper connection, int id) {
@@ -163,14 +164,59 @@ public final class RentRequestDao {
         }
     }
 
+    public List<RequestInfo> getUserRequestsWithStatus(ConnectionWrapper connection, int status, long userId) {
+        String sql = "SELECT * FROM requests INNER JOIN cars c on c.id = requests.car_id" +
+                " WHERE status = ? AND user_id = ?";
 
-    public List<RequestInfo> getOutatedActiveRequests(ConnectionWrapper connection) {
-        String sql = "SELECT * FROM requests WHERE status = ? AND ? > (start_date + days)" +
-                " INNER JOIN cars c on c.id = requests.car_id";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, status);
+            statement.setLong(2, userId);
+
+            ArrayList<RequestInfo> requests = new ArrayList<>();
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                requests.add(resultToRequestInfo(resultSet));
+            }
+
+            return requests;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    public List<RequestInfo> getOutdatedActiveRequests(ConnectionWrapper connection) {
+        String sql = "SELECT * FROM requests INNER JOIN cars c on c.id = requests.car_id" +
+                " WHERE status = ? AND ? > (start_date + days)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, RentRequest.STATUS_ACTIVE);
             statement.setDate(2, Date.valueOf(LocalDate.now()));
+
+            ArrayList<RequestInfo> requests = new ArrayList<>();
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                requests.add(resultToRequestInfo(resultSet));
+            }
+
+            return requests;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<RequestInfo> getOutdatedActiveRequests(ConnectionWrapper connection, long userId) {
+        String sql = "SELECT * FROM requests INNER JOIN cars c on c.id = requests.car_id" +
+                " WHERE status = ? AND ? > (start_date + days) AND user_id = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, RentRequest.STATUS_ACTIVE);
+            statement.setDate(2, Date.valueOf(LocalDate.now()));
+            statement.setLong(3, userId);
 
             ArrayList<RequestInfo> requests = new ArrayList<>();
 

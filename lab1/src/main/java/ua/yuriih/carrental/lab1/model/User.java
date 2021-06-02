@@ -6,14 +6,12 @@ public final class User {
     private final long passportId;
     private final String name;
     private final String password;
-    private final Integer currentCar;
     private final boolean isAdmin;
 
-    public User(long passportId, String name, String password, Integer currentCar, boolean isAdmin) {
+    public User(long passportId, String name, String password, boolean isAdmin) {
         this.passportId = passportId;
         this.name = name;
         this.password = password;
-        this.currentCar = currentCar;
         this.isAdmin = isAdmin;
     }
 
@@ -32,18 +30,12 @@ public final class User {
     public String getPassword() {
         return password;
     }
-
-    public int getCurrentCar() {
-        return currentCar;
-    }
-
     @Override
     public String toString() {
         return "User{" +
                 "passportId=" + passportId +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
-                ", currentCar=" + currentCar +
                 ", isAdmin=" + isAdmin +
                 '}';
     }
@@ -53,11 +45,11 @@ public final class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return passportId == user.passportId && currentCar.equals(user.currentCar) && isAdmin == user.isAdmin && name.equals(user.name) && password.equals(user.password);
+        return passportId == user.passportId && isAdmin == user.isAdmin && name.equals(user.name) && password.equals(user.password);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(passportId, name, password, currentCar, isAdmin);
+        return Objects.hash(passportId, name, password, isAdmin);
     }
 }

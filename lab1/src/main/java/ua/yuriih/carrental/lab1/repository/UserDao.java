@@ -23,12 +23,9 @@ public final class UserDao {
         long id = resultSet.getLong("passport_id");
         String name = resultSet.getString("name");
         String password = resultSet.getString("password");
-        Integer currentCarId = resultSet.getInt("current_car");
-        if (resultSet.wasNull())
-            currentCarId = null;
         boolean isAdmin = resultSet.getBoolean("is_admin");
 
-        return new User(id, name, password, currentCarId, isAdmin);
+        return new User(id, name, password, isAdmin);
     }
 
     public User getUserByUsername(ConnectionWrapper connection, String username) {
@@ -71,16 +68,14 @@ public final class UserDao {
         String sql = "UPDATE users" +
                 " SET name = ?," +
                 "     password = ?," +
-                "     current_car = ?," +
                 "     is_admin = ?" +
                 " WHERE passport_id = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setString(1, user.getName());
             statement.setString(2, user.getPassword());
-            statement.setInt(3, user.getCurrentCar());
-            statement.setBoolean(4, user.isAdmin());
-            statement.setLong(5, user.getPassportId());
+            statement.setBoolean(3, user.isAdmin());
+            statement.setLong(4, user.getPassportId());
 
             statement.executeUpdate();
         } catch (SQLException e) {
@@ -91,7 +86,7 @@ public final class UserDao {
 
     public User insertUser(ConnectionWrapper connection, long passportId, String name, String password) {
         String sql = "INSERT INTO users" +
-                " VALUES (?, ?, ?, NULL, FALSE)";
+                " VALUES (?, ?, ?, FALSE)";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, passportId);
@@ -99,7 +94,7 @@ public final class UserDao {
             statement.setString(3, password);
             int result = statement.executeUpdate();
             if (result == 1) {
-                return new User(passportId, name, password, null, false);
+                return new User(passportId, name, password, false);
             } else {
                 return null;
             }
