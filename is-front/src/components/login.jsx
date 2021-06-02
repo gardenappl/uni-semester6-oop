@@ -27,9 +27,7 @@ class Login extends Component {
 				localStorage.setItem("token", result['token']);
 				localStorage.setItem("isAdmin", result['isAdmin']);
 				console.log(`Got token ${result['token']}`);
-				withRouter(({ history }) => {
-					history.push('/');
-				});
+				window.location.href = "..";
 			} else {
 				alert("Wrong username or password");
 			}
