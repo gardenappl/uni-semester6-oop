@@ -9,6 +9,7 @@ import ua.yuriih.carrental.lab1.controller.UserController;
 import ua.yuriih.carrental.lab1.model.CarStatistic;
 import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 public class PopularCarsServlet extends HttpServlet {
     private static class Request {
         public long token;
+        public String since;
     }
 
     private static class Response {
@@ -35,6 +37,10 @@ public class PopularCarsServlet extends HttpServlet {
             return;
         }
 
-        ServletJsonUtils.objectToJsonResponse(new Response(CarController.INSTANCE.getMostPopularCars()), resp);
+        LocalDate since = null;
+        if (request.since != null && request.since.length() > 0)
+            since = LocalDate.parse(request.since);
+
+        ServletJsonUtils.objectToJsonResponse(new Response(CarController.INSTANCE.getMostPopularCars(since)), resp);
     }
 }

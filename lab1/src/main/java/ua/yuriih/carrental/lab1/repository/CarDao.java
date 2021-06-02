@@ -5,9 +5,11 @@ import ua.yuriih.carrental.lab1.model.CarStatistic;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 
 import java.math.BigDecimal;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -107,19 +109,25 @@ public final class CarDao {
     }
 
 
-    public List<CarStatistic.Profit> getMostProfitableCars(ConnectionWrapper connection) {
+    public List<CarStatistic.Profit> getMostProfitableCars(ConnectionWrapper connection, LocalDate since) {
         String sql = """
                 SELECT cars.id, model, manufacturer, SUM (hrn_amount) FROM cars
                 INNER JOIN payments ON (
                     EXISTS (
                         SELECT * FROM requests
-                        WHERE payments.request_id = requests.id AND requests.car_id = cars.id
+                        WHERE payments.request_id = requests.id AND requests.car_id = cars.id""";
+        if (since != null)
+            sql += " AND start_date >= ?";
+        sql += """
+                    
                     )
                 )
                 GROUP BY cars.id
                 ORDER BY SUM(hrn_amount) DESC""";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            if (since != null)
+                statement.setDate(1, Date.valueOf(since));
             ArrayList<CarStatistic.Profit> cars = new ArrayList<>();
 
             ResultSet resultSet = statement.executeQuery();
@@ -135,14 +143,20 @@ public final class CarDao {
     }
 
 
-    public List<CarStatistic.RequestCount> getMostPopularCars(ConnectionWrapper connection) {
+    public List<CarStatistic.RequestCount> getMostPopularCars(ConnectionWrapper connection, LocalDate since) {
         String sql = """
             SELECT cars.id, model, manufacturer, COUNT (DISTINCT r.id) AS requests
-            FROM cars INNER JOIN requests r on cars.id = r.car_id
-            GROUP BY cars.id;
-            """;
+            FROM cars INNER JOIN requests r on cars.id = r.car_id""";
+        if (since != null) {
+            sql += " AND start_date >= ?";
+        }
+        sql += """
+            
+            GROUP BY cars.id;""";
 
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            if (since != null)
+                statement.setDate(1, Date.valueOf(since));
             ArrayList<CarStatistic.RequestCount> cars = new ArrayList<>();
 
             ResultSet resultSet = statement.executeQuery();

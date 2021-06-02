@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
 import { fetchPostJson } from "../utils.js";
 import API_SERVER from "../Constants.js";
 

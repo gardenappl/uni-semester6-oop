@@ -12,18 +12,21 @@ import ua.yuriih.carrental.lab1.model.*;
 import ua.yuriih.carrental.lab1.repository.CarDao;
 import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
 
+import java.time.LocalDate;
+import java.util.Collections;
 import java.util.List;
 
 @WebServlet(value = "/top-cars")
 public class TopCarsServlet extends HttpServlet {
     private static class Request {
         public long token;
+        public String since;
     }
 
     private static class Response {
-        public final CarStatistic.Profit[] carStatistics;
+        public final List<CarStatistic.Profit> carStatistics;
 
-        Response(CarStatistic.Profit[] carStatistics) {
+        Response(List<CarStatistic.Profit> carStatistics) {
             this.carStatistics = carStatistics;
         }
     }
@@ -33,14 +36,14 @@ public class TopCarsServlet extends HttpServlet {
         Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
 
         if (!UserController.INSTANCE.isAdminToken(request.token)) {
-            ServletJsonUtils.objectToJsonResponse(new Response(new CarStatistic.Profit[0]), resp);
+            ServletJsonUtils.objectToJsonResponse(new Response(Collections.emptyList()), resp);
             return;
         }
 
-        List<CarStatistic.Profit> carStatisticsList = CarController.INSTANCE.getMostProfitableCars();
-        CarStatistic.Profit[] carStatistics = new CarStatistic.Profit[carStatisticsList.size()];
-        carStatisticsList.toArray(carStatistics);
+        LocalDate since = null;
+        if (request.since != null && request.since.length() > 0)
+            since = LocalDate.parse(request.since);
 
-        ServletJsonUtils.objectToJsonResponse(new Response(carStatistics), resp);
+        ServletJsonUtils.objectToJsonResponse(new Response(CarController.INSTANCE.getMostProfitableCars(since)), resp);
     }
 }

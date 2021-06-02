@@ -7,6 +7,7 @@ import ua.yuriih.carrental.lab1.repository.connection.ConnectionPool;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 public class CarController {
@@ -26,15 +27,15 @@ public class CarController {
         }
     }
 
-    public List<CarStatistic.Profit> getMostProfitableCars() {
+    public List<CarStatistic.Profit> getMostProfitableCars(LocalDate since) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            return CarDao.INSTANCE.getMostProfitableCars(connection);
+            return CarDao.INSTANCE.getMostProfitableCars(connection, since);
         }
     }
 
-    public List<CarStatistic.RequestCount> getMostPopularCars() {
+    public List<CarStatistic.RequestCount> getMostPopularCars(LocalDate since) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            return CarDao.INSTANCE.getMostPopularCars(connection);
+            return CarDao.INSTANCE.getMostPopularCars(connection, since);
         }
     }
 }
