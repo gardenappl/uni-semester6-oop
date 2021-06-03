@@ -41,7 +41,14 @@ function App() {
             <Route path="/new-car" component={NewCar}/>
             <Route exact path="/" component={MyStatus}/>
           </div>
+	  
+	  <div class="footer">
+	    <span>Грищенко Юрій</span>
+	    <span>ІПС-32</span>
+	    <span>(335) 355 35 53</span>
+	  </div>
         </div>
+
 
 	  </HashRouter>
   );

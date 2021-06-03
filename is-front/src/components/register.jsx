@@ -34,22 +34,16 @@ class Register extends Component {
 		event.preventDefault();
 	}
 	render() {
-		return <div>
+		return <div class="account-fill-form">
 			<form onSubmit={this.handleSubmit}>
-				<label>
-					Username:
-					<input type="text" name="username" onChange={this.handleChange} />
-				</label>
+				<label> Username:</label>
+				<input type="text" name="username" onChange={this.handleChange} />
 				<br/>
-				<label>
-					Password:
-					<input type="password" name="password" onChange={this.handleChange} />
-				</label>
+				<label> Password:</label>
+				<input type="password" name="password" onChange={this.handleChange} />
 				<br/>
-				<label>
-					Passport ID:
-					<input type="text" name="passportId" onChange={this.handleChange} />
-				</label>
+				<label> Passport ID:</label>
+				<input type="text" name="passportId" onChange={this.handleChange} />
 				<br/>
 				<input type="submit" value="Register" />
 			</form>
