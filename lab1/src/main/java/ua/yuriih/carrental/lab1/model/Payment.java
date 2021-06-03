@@ -1,33 +1,43 @@
 package ua.yuriih.carrental.lab1.model;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Payment {
     private final int id;
     private final BigDecimal hrnAmount;
-    private final int rentRequestId;
+    private final Integer rentRequestId;
     private final int type;
+    private final Integer carId;
+    private final LocalDate date;
 
     public static final int TYPE_REVENUE = 0;
     public static final int TYPE_REPAIR_COST = 1;
     public static final int TYPE_MAINTENANCE = 2;
     public static final int TYPE_REFUND = 3;
     public static final int TYPE_REPAIR_PAID_BY_CUSTOMER = 4;
+    public static final int TYPE_PURCHASE_NEW_CAR = 5;
 
-    public Payment(Integer id, BigDecimal hrnAmount, int rentRequestId, int type) {
+    public Payment(Integer id, BigDecimal hrnAmount, Integer rentRequestId, int type, Integer carId, LocalDate date) {
         this.id = id;
         this.hrnAmount = hrnAmount;
         this.rentRequestId = rentRequestId;
         this.type = type;
+        this.carId = carId;
+        this.date = date;
     }
 
     public BigDecimal getHrnAmount() {
         return hrnAmount;
     }
 
-    public int getRentRequestId() {
+    public Integer getRentRequestId() {
         return rentRequestId;
+    }
+
+    public Integer getCarId() {
+        return carId;
     }
 
     public int getId() {
@@ -43,7 +53,7 @@ public class Payment {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Payment payment = (Payment) o;
-        return hrnAmount.equals(payment.hrnAmount) && rentRequestId == payment.rentRequestId && id == payment.id && type == payment.type;
+        return hrnAmount.equals(payment.hrnAmount) && Objects.equals(rentRequestId, payment.rentRequestId) && id == payment.id && type == payment.type && Objects.equals(carId, payment.carId) && Objects.equals(date, payment.date);
     }
 
     @Override
@@ -58,6 +68,11 @@ public class Payment {
                 ", hrnAmount=" + hrnAmount +
                 ", rentRequestId=" + rentRequestId +
                 ", type=" + type +
+                ", date=" + date +
                 '}';
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 }

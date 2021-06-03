@@ -57,7 +57,7 @@ public class RentController {
                     throw new IllegalArgumentException("Payment amount is not high enough");
 
                 RentRequest request = rentRequestDao.insert(connection, RentRequest.STATUS_PENDING, "", userId, carId, days, startDate, null);
-                paymentDao.insertPayment(connection, hrnAmount, request.getId(), Payment.TYPE_REVENUE);
+                paymentDao.insertPayment(connection, hrnAmount, request.getId(), Payment.TYPE_REVENUE, carId, LocalDate.now());
 
                 return request;
             });
@@ -97,7 +97,9 @@ public class RentController {
                         car.getManufacturer(),
                         car.getHrnPerDay(),
                         request.getUserId(),
-                        car.getThumbnailUrl()
+                        car.getThumbnailUrl(),
+                        car.getDescription(),
+                        car.getHrnPurchase()
                 ));
 
                 return newRequest;
@@ -136,7 +138,9 @@ public class RentController {
                 paymentDao.insertPayment(connection,
                         payment.getHrnAmount().negate(),
                         id,
-                        Payment.TYPE_REFUND
+                        Payment.TYPE_REFUND,
+                        request.getCarId(),
+                        LocalDate.now()
                 );
 
                 return newRequest;
@@ -177,13 +181,17 @@ public class RentController {
                         car.getManufacturer(),
                         car.getHrnPerDay(),
                         null,
-                        car.getThumbnailUrl()
+                        car.getThumbnailUrl(),
+                        car.getDescription(),
+                        car.getHrnPurchase()
                 ));
 
                 paymentDao.insertPayment(connection,
                         maintenanceCostHrn.negate(),
-                        id,
-                        Payment.TYPE_MAINTENANCE
+                        null,
+                        Payment.TYPE_MAINTENANCE,
+                        request.getCarId(),
+                        LocalDate.now()
                 );
 
                 return newRequest;
@@ -216,7 +224,13 @@ public class RentController {
 
                 rentRequestDao.update(connection, newRequest);
 
-                paymentDao.insertPayment(connection, paymentCost.negate(), id, Payment.TYPE_REPAIR_COST);
+                paymentDao.insertPayment(connection,
+                        paymentCost.negate(),
+                        id,
+                        Payment.TYPE_REPAIR_COST,
+                        request.getCarId(),
+                        LocalDate.now()
+                        );
 
                 return newRequest;
             });
@@ -250,7 +264,13 @@ public class RentController {
                 );
 
                 rentRequestDao.update(connection, newRequest);
-                paymentDao.insertPayment(connection, hrnAmount, id, Payment.TYPE_REPAIR_PAID_BY_CUSTOMER);
+                paymentDao.insertPayment(connection,
+                        hrnAmount,
+                        id,
+                        Payment.TYPE_REPAIR_PAID_BY_CUSTOMER,
+                        request.getCarId(),
+                        LocalDate.now()
+                );
 
                 Car car = carDao.getCar(connection, request.getCarId());
                 carDao.update(connection, new Car(
@@ -259,8 +279,9 @@ public class RentController {
                         car.getManufacturer(),
                         car.getHrnPerDay(),
                         null,
-                        car.getThumbnailUrl()
-                ));
+                        car.getThumbnailUrl(),
+                        car.getDescription(),
+                        car.getHrnPurchase()));
 
                 return newRequest;
             });
