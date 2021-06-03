@@ -11,6 +11,7 @@ import ua.yuriih.carrental.lab1.repository.connection.ConnectionPool;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class RentController {
                     throw new IllegalArgumentException("Payment amount is not high enough");
 
                 RentRequest request = rentRequestDao.insert(connection, RentRequest.STATUS_PENDING, "", userId, carId, days, startDate, null);
-                paymentDao.insertPayment(connection, hrnAmount, request.getId(), Payment.TYPE_REVENUE, carId, LocalDate.now());
+                paymentDao.insertPayment(connection, hrnAmount, request.getId(), Payment.TYPE_REVENUE, carId, Instant.now());
 
                 return request;
             });
@@ -140,7 +141,7 @@ public class RentController {
                         id,
                         Payment.TYPE_REFUND,
                         request.getCarId(),
-                        LocalDate.now()
+                        Instant.now()
                 );
 
                 return newRequest;
@@ -191,7 +192,7 @@ public class RentController {
                         null,
                         Payment.TYPE_MAINTENANCE,
                         request.getCarId(),
-                        LocalDate.now()
+                        Instant.now()
                 );
 
                 return newRequest;
@@ -229,7 +230,7 @@ public class RentController {
                         id,
                         Payment.TYPE_REPAIR_COST,
                         request.getCarId(),
-                        LocalDate.now()
+                        Instant.now()
                         );
 
                 return newRequest;
@@ -269,7 +270,7 @@ public class RentController {
                         id,
                         Payment.TYPE_REPAIR_PAID_BY_CUSTOMER,
                         request.getCarId(),
-                        LocalDate.now()
+                        Instant.now()
                 );
 
                 Car car = carDao.getCar(connection, request.getCarId());

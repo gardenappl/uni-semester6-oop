@@ -75,7 +75,7 @@ public final class CarDao {
                 "     manufacturer = ?," +
                 "     hrn_per_day = ?," +
                 "     current_user_id = ?," +
-                "     thumbnail_url = ?" +
+                "     thumbnail_url = ?," +
                 "     description = ?," +
                 "     hrn_purchase = ?" +
                 " WHERE id = ?";
@@ -136,6 +136,43 @@ public final class CarDao {
             }
 
             return cars;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Car> getFreeCarsForManufacturer(ConnectionWrapper connection, String manufacturer) {
+        String sql = "SELECT * FROM cars WHERE current_user_id IS NULL AND manufacturer = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, manufacturer);
+            ArrayList<Car> cars = new ArrayList<>();
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                cars.add(resultToCar(resultSet));
+            }
+
+            return cars;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> getAllCarManufacturers(ConnectionWrapper connection) {
+        String sql = "SELECT DISTINCT manufacturer FROM cars";
+
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            ArrayList<String> manufacturers = new ArrayList<>();
+
+            ResultSet resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                manufacturers.add(resultSet.getString("manufacturer"));
+            }
+
+            return manufacturers;
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

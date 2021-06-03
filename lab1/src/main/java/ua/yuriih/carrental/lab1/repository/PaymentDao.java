@@ -6,11 +6,11 @@ import ua.yuriih.carrental.lab1.model.PaymentInfo;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 
 import java.math.BigDecimal;
-import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +29,7 @@ public class PaymentDao {
         if (resultSet.wasNull())
             carId = null;
         int type = resultSet.getInt("type");
-        LocalDate date = resultSet.getDate("date").toLocalDate();
+        Instant date = Instant.parse(resultSet.getDate("date").toString());
 
         return new Payment(id, hrnAmount, requestId, type, carId, date);
     }
@@ -129,7 +129,7 @@ public class PaymentDao {
         }
     }
 
-    public Payment insertPayment(ConnectionWrapper connection, BigDecimal hrnAmount, Integer requestId, int type, Integer carId, LocalDate date) {
+    public Payment insertPayment(ConnectionWrapper connection, BigDecimal hrnAmount, Integer requestId, int type, Integer carId, Instant date) {
         String sql = "INSERT INTO payments" +
                 " VALUES (DEFAULT, ?, ?, ?, ?, ?)" +
                 " RETURNING id";
@@ -139,7 +139,7 @@ public class PaymentDao {
             statement.setObject(2, requestId);
             statement.setInt(3, type);
             statement.setObject(4, carId);
-            statement.setDate(5, Date.valueOf(date));
+            statement.setObject(5, LocalDateTime.ofInstant(date, ZoneId.systemDefault()));
 
             ResultSet result = statement.executeQuery();
             if (result.next()) {

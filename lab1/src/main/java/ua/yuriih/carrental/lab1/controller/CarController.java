@@ -9,6 +9,7 @@ import ua.yuriih.carrental.lab1.repository.connection.ConnectionPool;
 import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -23,9 +24,21 @@ public class CarController {
         }
     }
 
+    public List<Car> getAvailableCars(String manufacturer) {
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return CarDao.INSTANCE.getFreeCarsForManufacturer(connection, manufacturer);
+        }
+    }
+
     public Car getCar(int id) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
             return CarDao.INSTANCE.getCar(connection, id);
+        }
+    }
+
+    public List<String> getAllCarManufacturers() {
+        try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
+            return CarDao.INSTANCE.getAllCarManufacturers(connection);
         }
     }
 
@@ -57,7 +70,7 @@ public class CarController {
                     null,
                     Payment.TYPE_PURCHASE_NEW_CAR,
                     car.getId(),
-                    LocalDate.now()
+                    Instant.now()
             );
             return car;
         }

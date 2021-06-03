@@ -8,12 +8,42 @@ class Cars extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			cars: []
+			manufacturer: '---',
+			cars: [],
+			manufacturers: ['---']
 		}
-		console.log("Cars:");
-		fetchPostJson(API_SERVER + "/cars", {
-			getAllAvailableCars: true
-		})
+		this.getCars = this.getCars.bind(this);
+		this.onSelectManufacturer = this.onSelectManufacturer.bind(this);
+
+		fetchPostJson(API_SERVER + "/car-models", {})
+		.then((result) => {
+			this.setState({
+				manufacturers: ['---'].concat(result['manufacturers'])
+			})
+		});
+		this.getCars('---');
+	}
+
+	onSelectManufacturer(event) {
+		this.setState({
+			manufacturer: event.target.value
+		});
+		this.getCars(event.target.value);
+	};
+
+	getCars(manufacturer) {
+		let options = {};
+		if (manufacturer === '---') {
+			options = {
+				getAllAvailableCars: true
+			}
+		} else {
+			options = {
+				getAllAvailableCars: true,
+				manufacturer: manufacturer
+			}
+		}
+		fetchPostJson(API_SERVER + "/cars", options)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -24,6 +54,10 @@ class Cars extends Component {
 	render() {
 		return <div>
 			{localStorage.getItem('isAdmin') === 'true' && <NavLink to="/new-car">Add new car</NavLink>}
+			<br />
+			<select onChange={this.onSelectManufacturer} defaultValue='---'>
+			{this.state.manufacturers.map((manufacturer) => <option value={manufacturer}>{manufacturer}</option>)}
+			</select>
 			<h2>Available cars:</h2>
 			<div class="cars">
 				{this.state.cars.map(carToComponent)}

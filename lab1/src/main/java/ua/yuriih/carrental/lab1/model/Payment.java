@@ -1,7 +1,9 @@
 package ua.yuriih.carrental.lab1.model;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.Objects;
 
 public class Payment {
@@ -10,7 +12,7 @@ public class Payment {
     private final Integer rentRequestId;
     private final int type;
     private final Integer carId;
-    private final LocalDate date;
+    private final Instant date;
 
     public static final int TYPE_REVENUE = 0;
     public static final int TYPE_REPAIR_COST = 1;
@@ -19,7 +21,7 @@ public class Payment {
     public static final int TYPE_REPAIR_PAID_BY_CUSTOMER = 4;
     public static final int TYPE_PURCHASE_NEW_CAR = 5;
 
-    public Payment(Integer id, BigDecimal hrnAmount, Integer rentRequestId, int type, Integer carId, LocalDate date) {
+    public Payment(Integer id, BigDecimal hrnAmount, Integer rentRequestId, int type, Integer carId, Instant date) {
         this.id = id;
         this.hrnAmount = hrnAmount;
         this.rentRequestId = rentRequestId;
@@ -72,7 +74,7 @@ public class Payment {
                 '}';
     }
 
-    public LocalDate getDate() {
+    public Instant getDate() {
         return date;
     }
 }
