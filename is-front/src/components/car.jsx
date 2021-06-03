@@ -5,9 +5,11 @@ function Car(props) {
 	return <NavLink to={`car/${props.carId}`}>
 		<div class="car">
 			<img width="200dp" height="100%" src={props.thumbnailUrl}/>
-			<span class="car-name">{props.manufacturer} {props.model}</span>
-			<br />
-			<span class="car-cost"><b>{priceFormat.format(props.hrnPerDay)}</b> per day</span>
+			<div class="car-text">
+				<span class="car-name">{props.manufacturer} {props.model}</span>
+				<br />
+				<span class="car-cost"><b>{priceFormat.format(props.hrnPerDay)}</b> per day</span>
+			</div>
 		</div>
 	</NavLink>
 }

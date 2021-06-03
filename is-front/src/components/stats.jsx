@@ -175,6 +175,7 @@ class AdminStats extends Component {
 
 			<h3>Payments:</h3>
 			{paymentsToTotal(this.state.recentPayments)}
+			<br />
 			<table class="payment-stats">
 				{this.state.recentPayments.map((payment) => {
 					return paymentToComponent(payment);
@@ -199,6 +200,7 @@ class AdminStats extends Component {
 
 			<h3>Payments:</h3>
 			{paymentsToTotal(this.state.allPayments)}
+			<br />
 			<table class="payment-stats">
 				{this.state.allPayments.map((payment) => {
 					return paymentToComponent(payment);

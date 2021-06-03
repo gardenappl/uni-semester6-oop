@@ -55,10 +55,14 @@ class Cars extends Component {
 		return <div>
 			{localStorage.getItem('isAdmin') === 'true' && <NavLink to="/new-car">Add new car</NavLink>}
 			<br />
-			<select onChange={this.onSelectManufacturer} defaultValue='---'>
-			{this.state.manufacturers.map((manufacturer) => <option value={manufacturer}>{manufacturer}</option>)}
-			</select>
 			<h2>Available cars:</h2>
+			<label>
+				Manufacturer:
+				<select onChange={this.onSelectManufacturer} defaultValue='---'>
+					{this.state.manufacturers.map((manufacturer) =>
+						<option value={manufacturer}>{manufacturer}</option>)}
+				</select>
+			</label>
 			<div class="cars">
 				{this.state.cars.map(carToComponent)}
 			</div>

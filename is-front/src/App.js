@@ -19,14 +19,17 @@ function App() {
 	  <HashRouter>
 
  <div class="App">
+	  <img id="banner-img" src="https://www.adelaideairport.com.au/wp-content/uploads/2014/12/parking.jpg"/>
+
           <h1>Car Rental</h1>
           <ul className="header">
 	    <li><NavLink exact to="/">Main</NavLink></li>
 	    <li><NavLink to="/cars">Cars</NavLink></li>
-            <li><NavLink to="/login">Log In</NavLink></li>
+            <li><NavLink to="/login">Change user</NavLink></li>
 	    {localStorage.getItem('isAdmin') === 'true' && <li><NavLink to="/admin">Admin</NavLink></li>}
 	    {localStorage.getItem('isAdmin') === 'true' && <li><NavLink to="/stats">Stats</NavLink></li>}
           </ul>
+
           <div className="content">
             <Route path="/login" component={Login}/>
             <Route path="/register" component={Register}/>

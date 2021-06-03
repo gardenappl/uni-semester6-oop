@@ -86,19 +86,22 @@ class RequestInfo extends Component {
 		const priceFormat = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH' });
 		const isAdmin = localStorage.getItem('isAdmin') === 'true';
 		return <div class="rent-request">
-			<span class="user-id">Passport ID: {this.props.passportId}</span>
-			<br />
-			<span class="car">{this.props.manufacturer} {this.props.model}</span>
-			<br />
-			<span class="time">{this.props.startDate}, {this.props.days} days</span>
-			<br />
-			<span class="total-cost">{priceFormat.format(this.props.cost)}</span>
-			{isAdmin && this.props.status === STATUS_PENDING && <button type="button" onClick={this.onAccept}>Approve</button>}
-			{isAdmin && this.props.status === STATUS_PENDING && <button type="button" onClick={this.onDeny}>Deny</button>}
-			{isAdmin && this.props.status === STATUS_ACTIVE && <button type="button" onClick={this.onEnd}>Car returned</button>}
-			{isAdmin && this.props.status === STATUS_ACTIVE && <button type="button" onClick={this.onRepairNeeded}>Car returned (damaged)</button>}
-			{this.props.message && <div class="message">{this.props.message}</div>}
-			{this.props.status === STATUS_REPAIR_NEEDED && <button type="button" onClick={this.payRepair}>Pay {priceFormat.format(this.props.repairCost)}</button>}
+			<div class="col1 col">
+				{isAdmin && <span class="user-id">Passport ID: {this.props.passportId}<br /></span>}
+				<span class="car-name">{this.props.manufacturer} {this.props.model}</span>
+				<br />
+				<span class="time">{this.props.startDate}, {this.props.days} days</span>
+				<br />
+				<span class="total-cost">{priceFormat.format(this.props.cost)}</span>
+			</div>
+			{this.props.message && <div class="message col">{this.props.message}</div>}
+			<div class="manage col">
+				{isAdmin && this.props.status === STATUS_PENDING && <button type="button" onClick={this.onAccept}>Approve</button>}
+				{isAdmin && this.props.status === STATUS_PENDING && <button type="button" onClick={this.onDeny}>Deny</button>}
+				{isAdmin && this.props.status === STATUS_ACTIVE && <button type="button" onClick={this.onEnd}>Car returned</button>}
+				{isAdmin && this.props.status === STATUS_ACTIVE && <button type="button" onClick={this.onRepairNeeded}>Car returned (damaged)</button>}
+				{this.props.status === STATUS_REPAIR_NEEDED && <button type="button" onClick={this.payRepair}>Pay {priceFormat.format(this.props.repairCost)}</button>}
+			</div>
 		</div>
 	}
 
