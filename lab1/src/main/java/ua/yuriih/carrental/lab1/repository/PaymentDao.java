@@ -7,10 +7,7 @@ import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +26,10 @@ public class PaymentDao {
         if (resultSet.wasNull())
             carId = null;
         int type = resultSet.getInt("type");
-        Instant date = Instant.parse(resultSet.getDate("date").toString());
+        LocalDate date = resultSet.getDate("date").toLocalDate();
+        Instant instant = date.atStartOfDay(ZoneId.systemDefault()).toInstant();
 
-        return new Payment(id, hrnAmount, requestId, type, carId, date);
+        return new Payment(id, hrnAmount, requestId, type, carId, instant);
     }
 
     private static PaymentInfo resultToPaymentInfo(ResultSet resultSet) throws SQLException {
