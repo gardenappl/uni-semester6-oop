@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { toLocalDateString, fetchPostJson } from "../utils.js";
 import { NavLink } from "react-router-dom";
 import API_SERVER  from "../Constants.js";
-import paymentToComponent from "./payment.jsx";
+import { paymentsToTotal, paymentToComponent } from "./payment.jsx";
 
 function PopularityStatistic(props) {
 	return <tr>
@@ -174,6 +174,7 @@ class AdminStats extends Component {
 			</table>
 
 			<h3>Payments:</h3>
+			{paymentsToTotal(this.state.recentPayments)}
 			<table class="payment-stats">
 				{this.state.recentPayments.map((payment) => {
 					return paymentToComponent(payment);
@@ -197,6 +198,7 @@ class AdminStats extends Component {
 			</table>
 
 			<h3>Payments:</h3>
+			{paymentsToTotal(this.state.allPayments)}
 			<table class="payment-stats">
 				{this.state.allPayments.map((payment) => {
 					return paymentToComponent(payment);

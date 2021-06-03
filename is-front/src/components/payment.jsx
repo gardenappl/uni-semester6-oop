@@ -37,4 +37,12 @@ function paymentToComponent(payment) {
 	/>
 }
 
-export default paymentToComponent;
+function paymentsToTotal(payments) {
+	const priceFormat = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH' });
+	return <b>Total profit: {priceFormat.format(payments
+		.map((payment) => { return payment.hrnAmount })
+		.reduce((a, b) => { return a + b }, 0)
+	)}</b>
+}
+
+export { paymentToComponent, paymentsToTotal };
