@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { fetchPostJson } from "../utils.js";
 import API_SERVER from "../Constants.js";
 import { carToComponent } from "./car.jsx";
+import { NavLink } from "react-router-dom";
 
 class Cars extends Component {
 	constructor(props) {
@@ -22,6 +23,7 @@ class Cars extends Component {
 	}
 	render() {
 		return <div>
+			{localStorage.getItem('isAdmin') === 'true' && <NavLink to="/new-car">Add new car</NavLink>}
 			<h2>Available cars:</h2>
 			<div class="cars">
 				{this.state.cars.map(carToComponent)}

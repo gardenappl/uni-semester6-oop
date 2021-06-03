@@ -12,6 +12,7 @@ import Request from "./components/new-request.jsx";
 import RequestsAdmin from "./components/admin.jsx";
 import MyStatus from "./components/main.jsx";
 import AdminStats from "./components/stats.jsx";
+import NewCar from "./components/new-car.jsx";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
 	    <Route path="/admin" component={RequestsAdmin}/>
             <Route path="/cars" component={Cars}/>
             <Route path="/stats" component={AdminStats}/>
+            <Route path="/new-car" component={NewCar}/>
             <Route exact path="/" component={MyStatus}/>
           </div>
         </div>

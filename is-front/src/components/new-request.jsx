@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { withRouter } from "react-router-dom";
 import { toLocalDateString, fetchPostJson, lastSegment } from "../utils.js";
 import API_SERVER from "../Constants.js";
 
@@ -49,12 +48,10 @@ class Request extends Component {
 		.then((result) => {
 			if (result['success']) {
 				alert("Thanks! Please wait until your request gets approved.");
-				withRouter(({ history }) => {
-					history.push('/');
-				});
 			} else {
 				alert("Something went wrong.");
 			}
+			window.location.href = '..';
 		});
 		event.preventDefault();
 	}

@@ -10,6 +10,7 @@ class CarInfo extends Component {
 		this.state = {
 			model: "",
 			manufacturer: "",
+			description: "",
 			thumbnailUrl: "",
 			hrnPerDay: "",
 			payments: []
@@ -40,6 +41,7 @@ class CarInfo extends Component {
 			<h2 id="manufacturer">{this.state.manufacturer}</h2>
 			<h3 id="model">{this.state.model}</h3>
 			<img src={this.state.thumbnailUrl} />
+			<p>{this.state.description}</p>
 			<span class="price">Price: <b>{priceFormat.format(this.state.hrnPerDay)}</b> per day</span>
 			<br />
 			<NavLink to={`/request/${lastSegment(window.location.href)}`}>Rent now</NavLink>
