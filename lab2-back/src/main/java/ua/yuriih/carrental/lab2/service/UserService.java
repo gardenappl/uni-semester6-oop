@@ -23,7 +23,11 @@ public class UserService {
     public String registerAndLogIn(long passportId, String username, String password) {
         User user = userRepository.findByPassportId(passportId);
         if (user == null) {
-            userRepository.save(new User(passportId, username, password));
+            user = new User();
+            user.setPassportId(passportId);
+            user.setName(username);
+            user.setKeycloakId(password);
+            userRepository.save(user);
         }
         return logIn(username, password);
     }

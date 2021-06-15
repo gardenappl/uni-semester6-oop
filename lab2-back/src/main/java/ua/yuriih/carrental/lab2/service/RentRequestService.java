@@ -56,13 +56,21 @@ public class RentRequestService {
         if (uahAmount.compareTo(car.getUahPerDay().multiply(BigDecimal.valueOf(days))) < 0)
             throw new IllegalArgumentException("Payment amount is not high enough");
 
-        RentRequest request = new RentRequest(userId, days, car, startDate);
+        RentRequest request = new RentRequest();
+        request.setUserId(userId);
+        request.setDays(days);
+        request.setCar(car);
+        request.setStartDate(startDate);
         request.setStatus(RentRequest.STATUS_PENDING);
         request = rentRequestRepository.save(request);
 
-        paymentRepository.save(new Payment(
-                uahAmount, request.getId(), Payment.TYPE_REVENUE, car, Instant.now()
-        ));
+        Payment newPayment = new Payment();
+        newPayment.setTime(Instant.now());
+        newPayment.setRentRequestId(request.getId());
+        newPayment.setType(Payment.TYPE_REVENUE);
+        newPayment.setCar(car);
+        newPayment.setUahAmount(uahAmount);
+        paymentRepository.save(newPayment);
 
         return request;
     }
@@ -83,7 +91,7 @@ public class RentRequestService {
 
         rentRequestRepository.deleteAllByCarAndStatus(car, RentRequest.STATUS_PENDING);
         car.setUser(user);
-        car = carRepository.save(car);
+        carRepository.save(car);
 
         return request;
     }
@@ -102,13 +110,13 @@ public class RentRequestService {
         //Do refund
 
         Payment payment = paymentRepository.getFirstByRentRequestIdAndType(id, Payment.TYPE_REVENUE);
-        paymentRepository.save(new Payment(
-                payment.getUahAmount().negate(),
-                id,
-                Payment.TYPE_REFUND,
-                payment.getCar(),
-                Instant.now()
-        ));
+        Payment newPayment = new Payment();
+        newPayment.setTime(Instant.now());
+        newPayment.setRentRequestId(id);
+        newPayment.setType(Payment.TYPE_REFUND);
+        newPayment.setCar(payment.getCar());
+        newPayment.setUahAmount(payment.getUahAmount().negate());
+        paymentRepository.save(newPayment);
 
         return request;
     }
@@ -127,13 +135,13 @@ public class RentRequestService {
         car.setUser(null);
         car = carRepository.save(car);
 
-        paymentRepository.save(new Payment(
-                maintenanceCostUah.negate(),
-                null,
-                Payment.TYPE_MAINTENANCE,
-                car,
-                Instant.now()
-        ));
+        Payment newPayment = new Payment();
+        newPayment.setTime(Instant.now());
+        newPayment.setRentRequestId(id);
+        newPayment.setType(Payment.TYPE_MAINTENANCE);
+        newPayment.setCar(car);
+        newPayment.setUahAmount(maintenanceCostUah.negate());
+        paymentRepository.save(newPayment);
 
         return request;
     }
@@ -150,13 +158,13 @@ public class RentRequestService {
         request.setRepairCost(paymentCost);
         request = rentRequestRepository.save(request);
 
-        paymentRepository.save(new Payment(
-                paymentCost.negate(),
-                id,
-                Payment.TYPE_REPAIR_COST,
-                request.getCar(),
-                Instant.now()
-        ));
+        Payment newPayment = new Payment();
+        newPayment.setTime(Instant.now());
+        newPayment.setRentRequestId(id);
+        newPayment.setType(Payment.TYPE_REPAIR_COST);
+        newPayment.setCar(request.getCar());
+        newPayment.setUahAmount(paymentCost.negate());
+        paymentRepository.save(newPayment);
 
         return request;
     }
@@ -175,13 +183,13 @@ public class RentRequestService {
 
         Car car = request.getCar();
 
-        paymentRepository.save(new Payment(
-                uahAmount,
-                id,
-                Payment.TYPE_REPAIR_PAID_BY_CUSTOMER,
-                car,
-                Instant.now()
-        ));
+        Payment newPayment = new Payment();
+        newPayment.setTime(Instant.now());
+        newPayment.setRentRequestId(id);
+        newPayment.setType(Payment.TYPE_REPAIR_PAID_BY_CUSTOMER);
+        newPayment.setCar(car);
+        newPayment.setUahAmount(uahAmount);
+        paymentRepository.save(newPayment);
 
         car.setUser(null);
         carRepository.save(car);

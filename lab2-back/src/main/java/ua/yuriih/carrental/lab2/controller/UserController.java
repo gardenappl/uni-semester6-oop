@@ -18,14 +18,14 @@ public class UserController {
 
     @Data
     public static class LoginRequest {
-        public final String username;
-        public final String password;
+        public String username;
+        public String password;
     }
 
     @Data
     private static class LoginResponse {
-        public final String token;
-        public final boolean shouldUseAdminFrontend;
+        public String token;
+        public boolean shouldUseAdminFrontend;
     }
 
     @PostMapping("login")
@@ -40,8 +40,8 @@ public class UserController {
     @Data
     public static class RegisterRequest {
         public long passportId;
-        public final String username;
-        public final String password;
+        public String username;
+        public String password;
     }
 
     @PostMapping("register")

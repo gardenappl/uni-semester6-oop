@@ -39,23 +39,23 @@ public class CarService {
 
     @Transactional
     public Car addCar(String model, String manufacturer, BigDecimal uahPerDay, User user, String thumbnailUrl, String description, BigDecimal uahPurchase) {
-        Car car = new Car(
-                model,
-                manufacturer,
-                uahPerDay,
-                thumbnailUrl,
-                description,
-                uahPurchase
-        );
+        Car car = new Car();
+        car.setModel(model);
+        car.setManufacturer(manufacturer);
+        car.setUahPerDay(uahPerDay);
+        car.setThumbnailUrl(thumbnailUrl);
+        car.setDescription(description);
+        car.setUahPurchase(uahPurchase);
         car.setUser(user);
         car = carRepository.save(car);
-        paymentRepository.save(new Payment(
-                uahPurchase.negate(),
-                null,
-                Payment.TYPE_PURCHASE_NEW_CAR,
-                car,
-                Instant.now()
-        ));
+
+        Payment payment = new Payment();
+        payment.setUahAmount(uahPurchase.negate());
+        payment.setCar(car);
+        payment.setRentRequestId(null);
+        payment.setType(Payment.TYPE_PURCHASE_NEW_CAR);
+        payment.setTime(Instant.now());
+        paymentRepository.save(payment);
         return car;
     }
 }

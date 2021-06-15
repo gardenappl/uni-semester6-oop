@@ -28,17 +28,17 @@ public class RentRequest {
     private String statusMessage;
 
     @Column(name = "user_id")
-    private final Long userId;
+    private Long userId;
 
     @Column
-    private final int days;
+    private int days;
 
     @ManyToOne
     @JoinColumn(name = "car_id")
-    private final Car car;
+    private Car car;
 
     @Column(name = "start_date", nullable = false)
-    private final LocalDate startDate;
+    private LocalDate startDate;
 
     @Column(name = "payment_cost", nullable = false)
     private BigDecimal repairCost;

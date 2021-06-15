@@ -15,24 +15,24 @@ public class Car {
     private int id;
 
     @Column(nullable = false)
-    private final String model;
+    private String model;
 
     @Column(nullable = false)
-    private final String manufacturer;
+    private String manufacturer;
 
     @Column(name = "uah_per_day", nullable = false)
-    private final BigDecimal uahPerDay;
+    private BigDecimal uahPerDay;
 
     @Column(name = "thumbnail_url", nullable = false)
-    private final String thumbnailUrl;
+    private String thumbnailUrl;
 
     @ManyToOne
     @JoinColumn(name = "current_user_id")
     private User user;
 
     @Column(nullable = false)
-    private final String description;
+    private String description;
 
     @Column(name = "uah_purchase", nullable = false)
-    private final BigDecimal uahPurchase;
+    private BigDecimal uahPurchase;
 }

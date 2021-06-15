@@ -22,18 +22,18 @@ public class Payment {
     private int id;
 
     @Column(name = "uah_amount", nullable = false)
-    private final BigDecimal uahAmount;
+    private BigDecimal uahAmount;
 
     @Column(name = "request_id")
-    private final Integer rentRequestId;
+    private Integer rentRequestId;
 
     @Column
-    private final int type;
+    private int type;
 
     @ManyToOne
     @JoinColumn(name = "car_id")
-    private final Car car;
+    private Car car;
 
     @Column
-    private final Instant time;
+    private Instant time;
 }

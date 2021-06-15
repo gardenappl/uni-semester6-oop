@@ -10,11 +10,11 @@ import javax.persistence.*;
 public class User {
     @Id
     @Column(name = "passport_id")
-    private final long passportId;
+    private long passportId;
 
     @Column(unique = true, nullable = false)
-    private final String name;
+    private String name;
 
     @Column(name = "keycloak_id", unique = true, nullable = false)
-    private final String keycloakId;
+    private String keycloakId;
 }

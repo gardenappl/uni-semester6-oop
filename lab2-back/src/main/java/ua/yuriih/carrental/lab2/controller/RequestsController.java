@@ -72,8 +72,8 @@ public class RequestsController {
 
     @Data
     public static class BrokenRequest {
-        private final String message;
-        private final BigDecimal repairCostUah;
+        private String message;
+        private BigDecimal repairCostUah;
     }
 
     //admin only
@@ -94,11 +94,11 @@ public class RequestsController {
 
     @Data
     public static class NewRentRequest {
-        private final BigDecimal paymentUah;
-        private final String token;
-        private final int carId;
-        private final int days;
-        private final LocalDate startDate;
+        private BigDecimal paymentUah;
+        private String token;
+        private int carId;
+        private int days;
+        private LocalDate startDate;
     }
 
     @PostMapping("/requests/new")
