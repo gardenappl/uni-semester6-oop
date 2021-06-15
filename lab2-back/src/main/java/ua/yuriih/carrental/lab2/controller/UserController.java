@@ -33,6 +33,7 @@ public class UserController {
     @PostMapping("login")
     public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest request) {
         String token = userService.logIn(request.username, request.password);
+        System.err.println(token);
         return ResponseEntity.ok(new LoginResponse(
                 token,
                 userService.shouldEnableAdminFrontend(token)

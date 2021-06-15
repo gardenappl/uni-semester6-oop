@@ -14,10 +14,10 @@ class Request extends Component {
 
 		this.carId = lastSegment(window.location.href);
 
-		fetchGetJson(API_SERVER + `/cars/${this.carId}`)
+		fetchGetJson(API_SERVER + `/car/${this.carId}`)
 		.then((result) => {
 			this.setState({
-				uahPerDay: result['cars'][0]['hrnPerDay']
+				uahPerDay: result['uahPerDay']
 			});
 		});
 
@@ -43,7 +43,7 @@ class Request extends Component {
 			startDate: toLocalDateString(new Date()),
 			paymentUah: String(this.state.cost)
 		})
-		.then((result) => {
+		.then((_result) => {
 			alert("Thanks! Please wait until your request gets approved.");
 			window.location.href = '..';
 		});

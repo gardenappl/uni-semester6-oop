@@ -11,6 +11,7 @@ import ua.yuriih.carrental.lab2.service.CarService;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -30,8 +31,11 @@ public class CarsController {
     }
 
     @GetMapping("/car/{id}")
-    public ResponseEntity<List<Car>> getCar(@PathVariable("id") int carId) {
-        return ResponseEntity.ok(List.of(carService.getCar(carId)));
+    public ResponseEntity<Car> getCar(@PathVariable("id") int carId) {
+        System.err.println(carId);
+        Car car = carService.getCar(carId);
+        System.err.println(car);
+        return ResponseEntity.ok(car);
     }
 
     @GetMapping("/car-manufacturers")
@@ -51,8 +55,8 @@ public class CarsController {
 
     //admin
     @PostMapping("/new-car")
-    public ResponseEntity<Car> addNewCar(@Validated @RequestBody NewRequest request) {
-        return ResponseEntity.ok(carService.addCar(
+    public ResponseEntity addNewCar(@Validated @RequestBody NewRequest request) {
+        carService.addCar(
                 request.model,
                 request.manufacturer,
                 request.uahPerDay,
@@ -60,6 +64,7 @@ public class CarsController {
                 request.thumbnailUrl,
                 request.description,
                 request.uahPurchase
-        ));
+        );
+        return ResponseEntity.ok().build();
     }
 }

@@ -23,6 +23,7 @@ class Login extends Component {
 		console.log("Logging in");
 		fetchPostJson(API_SERVER + "/login", this.state)
 		.then((result) => {
+			console.error(result);
 			if (result['token'].length > 0) {
 				localStorage.setItem("token", result['token']);
 				localStorage.setItem("isAdmin", result['shouldUseAdminFrontend']);

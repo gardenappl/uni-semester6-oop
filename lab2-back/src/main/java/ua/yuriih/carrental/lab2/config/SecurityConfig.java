@@ -7,7 +7,6 @@ import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurer
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -47,9 +46,6 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
         auth.authenticationProvider(keycloakAuthenticationProvider);
     }
 
-    /**
-     * tasks the SimpleAuthorityMapper to make sure roles are not prefixed with ROLE_
-     */
     private GrantedAuthoritiesMapper authoritiesMapper() {
         SimpleAuthorityMapper simpleAuthorityMapper = new SimpleAuthorityMapper();
         simpleAuthorityMapper.setPrefix("");
@@ -65,7 +61,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Collections.singletonList("*"));
+        configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
         configuration.setAllowCredentials(true);
         configuration.setAllowedMethods(Collections.singletonList("*"));
         configuration.setAllowedHeaders(Collections.singletonList("*"));

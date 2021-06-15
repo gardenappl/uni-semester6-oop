@@ -30,7 +30,7 @@ public class CarService {
     }
 
     public Car getCar(int id) {
-        return carRepository.getById(id);
+        return carRepository.findById(id).get();
     }
 
     public List<String> getAllCarManufacturers() {

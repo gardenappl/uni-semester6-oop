@@ -44,30 +44,33 @@ public class RequestsController {
 
     //admin only
     @PostMapping("/requests/approve/{id}")
-    public ResponseEntity<RentRequest> approve(@PathVariable("id") int requestId) {
-        return ResponseEntity.ok(rentRequestService.approve(requestId));
+    public ResponseEntity approve(@PathVariable("id") int requestId) {
+        rentRequestService.approve(requestId);
+        return ResponseEntity.ok().build();
     }
 
     @Data
     public static class DenyRequest {
-        private final String message;
+        private String message;
     }
 
     //admin only
     @PostMapping("/requests/deny/{id}")
-    public ResponseEntity<RentRequest> deny(@PathVariable("id") int requestId, @Validated @RequestBody DenyRequest request) {
-        return ResponseEntity.ok(rentRequestService.deny(requestId, request.message));
+    public ResponseEntity deny(@PathVariable("id") int requestId, @Validated @RequestBody DenyRequest request) {
+        rentRequestService.deny(requestId, request.message);
+        return ResponseEntity.ok().build();
     }
 
     @Data
     public static class EndSuccessfullyRequest {
-        private final BigDecimal maintenanceCostUah;
+        private BigDecimal maintenanceCostUah;
     }
 
     //admin only
     @PostMapping("/requests/end/{id}")
-    public ResponseEntity<RentRequest> end(@PathVariable("id") int requestId, @Validated @RequestBody EndSuccessfullyRequest request) {
-        return ResponseEntity.ok(rentRequestService.endSuccessfully(requestId, request.maintenanceCostUah));
+    public ResponseEntity end(@PathVariable("id") int requestId, @Validated @RequestBody EndSuccessfullyRequest request) {
+        rentRequestService.endSuccessfully(requestId, request.maintenanceCostUah);
+        return ResponseEntity.ok().build();
     }
 
     @Data
@@ -78,18 +81,20 @@ public class RequestsController {
 
     //admin only
     @PostMapping("/requests/broken/{id}")
-    public ResponseEntity<RentRequest> broken(@PathVariable("id") int requestId, @Validated @RequestBody BrokenRequest request) {
-        return ResponseEntity.ok(rentRequestService.setNeedsRepair(requestId, request.message, request.repairCostUah));
+    public ResponseEntity broken(@PathVariable("id") int requestId, @Validated @RequestBody BrokenRequest request) {
+        rentRequestService.setNeedsRepair(requestId, request.message, request.repairCostUah);
+        return ResponseEntity.ok().build();
     }
 
     @Data
     public static class RepairRequest {
-        private final BigDecimal paymentUah;
+        private BigDecimal paymentUah;
     }
 
     @PostMapping("/requests/repair/{id}")
-    public ResponseEntity<RentRequest> repair(@PathVariable("id") int requestId, @Validated @RequestBody RepairRequest request) {
-        return ResponseEntity.ok(rentRequestService.payForRepair(requestId, request.paymentUah));
+    public ResponseEntity repair(@PathVariable("id") int requestId, @Validated @RequestBody RepairRequest request) {
+        rentRequestService.payForRepair(requestId, request.paymentUah);
+        return ResponseEntity.ok().build();
     }
 
     @Data
@@ -102,7 +107,7 @@ public class RequestsController {
     }
 
     @PostMapping("/requests/new")
-    public ResponseEntity<RentRequest> newPending(@Validated @RequestBody NewRentRequest request) {
+    public ResponseEntity<Integer> newPending(@Validated @RequestBody NewRentRequest request) {
         long userId = userService.getUserIdFromToken(request.token);
         return ResponseEntity.ok(rentRequestService.addNewPending(
                 userId,
@@ -110,6 +115,6 @@ public class RequestsController {
                 request.days,
                 request.startDate,
                 request.paymentUah
-        ));
+        ).getId());
     }
 }

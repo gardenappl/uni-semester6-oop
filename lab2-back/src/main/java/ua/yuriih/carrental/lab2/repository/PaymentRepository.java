@@ -12,5 +12,5 @@ import java.util.List;
 public interface PaymentRepository extends JpaRepository<Payment, Integer> {
     Payment getFirstByRentRequestIdAndType(int requestId, int type);
 
-    List<Payment> findAllByCar(Car car);
+    List<Payment> findAllByCarOrderByTimeDesc(Car car);
 }

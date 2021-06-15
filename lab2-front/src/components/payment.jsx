@@ -1,3 +1,5 @@
+import { toLocalDateString } from "../utils.js";
+
 function Payment(props) {
 	const priceFormat = new Intl.NumberFormat('uk-UA', { style: 'currency', currency: 'UAH' });
 	let type = "";
@@ -22,7 +24,7 @@ function Payment(props) {
 		<td> {priceFormat.format(props.uahAmount)} </td>
 		<td> {type} </td>
 		<td> {props.manufacturer} {props.model} </td>
-		<td> {props.date} </td>
+		<td> {toLocalDateString(props.time)} </td>
 	</tr>;
 }
 
@@ -31,9 +33,9 @@ function paymentToComponent(payment) {
 		key={payment.id}
 		type={payment.type}
 		uahAmount={payment.uahAmount}
-		date={payment.date}
-		model={payment.model}
-		manufacturer={payment.manufacturer}
+		time={payment.time}
+		model={payment.car.model}
+		manufacturer={payment.car.manufacturer}
 	/>
 }
 

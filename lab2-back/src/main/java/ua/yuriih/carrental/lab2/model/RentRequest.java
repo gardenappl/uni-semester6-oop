@@ -1,5 +1,6 @@
 package ua.yuriih.carrental.lab2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -40,7 +41,7 @@ public class RentRequest {
     @Column(name = "start_date", nullable = false)
     private LocalDate startDate;
 
-    @Column(name = "payment_cost", nullable = false)
+    @Column(name = "payment_cost")
     private BigDecimal repairCost;
 
     public LocalDate getEndDate() {

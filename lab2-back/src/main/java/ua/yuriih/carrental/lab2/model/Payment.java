@@ -1,5 +1,6 @@
 package ua.yuriih.carrental.lab2.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -34,6 +35,6 @@ public class Payment {
     @JoinColumn(name = "car_id")
     private Car car;
 
-    @Column
+    @Column(nullable = false)
     private Instant time;
 }

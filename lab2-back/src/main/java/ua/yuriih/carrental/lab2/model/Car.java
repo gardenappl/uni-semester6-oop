@@ -28,6 +28,7 @@ public class Car {
 
     @ManyToOne
     @JoinColumn(name = "current_user_id")
+    @JsonIgnore
     private User user;
 
     @Column(nullable = false)

@@ -29,11 +29,12 @@ class NewCar extends Component {
 			manufacturer: this.state.manufacturer,
 			thumbnailUrl: this.state.thumbnailUrl,
 			description: this.state.description,
-			uahPerDay: this.state.hrnPerDay,
-			uahPurchase: this.state.hrnPurchase,
+			uahPerDay: this.state.uahPerDay,
+			uahPurchase: this.state.uahPurchase,
 		})
 		.then(() => {
 			alert("Added new car.");
+			window.location.href = '..';
 		});
 		event.preventDefault();
 	}

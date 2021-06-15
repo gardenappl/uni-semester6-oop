@@ -19,13 +19,13 @@ class CarInfo extends Component {
 		fetchGetJson(API_SERVER + `/car/${carId}`)
 		.then((result) => {
 			console.log(result);
-			this.setState(result.cars[0]);
+			this.setState(result);
 		});
 		if (localStorage.getItem('isAdmin') === 'true') {
-			fetchGetJson(API_SERVER + `/payments/car/{carId}`)
+			fetchGetJson(API_SERVER + `/payments/car/${carId}`)
 			.then((result) => {
 				this.setState({
-					payments: result['payments']
+					payments: result
 				});
 			});
 		}

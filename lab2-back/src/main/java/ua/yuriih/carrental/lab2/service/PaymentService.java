@@ -2,12 +2,10 @@ package ua.yuriih.carrental.lab2.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ua.yuriih.carrental.lab2.model.Car;
 import ua.yuriih.carrental.lab2.model.Payment;
 import ua.yuriih.carrental.lab2.repository.CarRepository;
 import ua.yuriih.carrental.lab2.repository.PaymentRepository;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -21,6 +19,6 @@ public class PaymentService {
     }
 
     public List<Payment> getPaymentsForCar(int carId) {
-        return paymentRepository.findAllByCar(carRepository.getById(carId));
+        return paymentRepository.findAllByCarOrderByTimeDesc(carRepository.findById(carId).get());
     }
 }

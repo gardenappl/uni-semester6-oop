@@ -23,7 +23,7 @@ class MyStatus extends Component {
 		.then((result) => {
 			console.log(result);
 			this.setState({
-				deniedRequests: result['requests']
+				deniedRequests: result
 			});
 		});
 
@@ -31,7 +31,7 @@ class MyStatus extends Component {
 		.then((result) => {
 			console.log(result);
 			this.setState({
-				repairNeededRequests: result['requests']
+				repairNeededRequests: result
 			});
 		});
 
@@ -39,7 +39,7 @@ class MyStatus extends Component {
 		.then((result) => {
 			console.log(result);
 			this.setState({
-				pendingRequests: result['requests']
+				pendingRequests: result
 			});
 		});
 
@@ -47,7 +47,7 @@ class MyStatus extends Component {
 		.then((result) => {
 			console.log(result);
 			this.setState({
-				activeRequests: result['requests']
+				activeRequests: result
 			});
 		});
 
@@ -55,7 +55,7 @@ class MyStatus extends Component {
 		.then((result) => {
 			console.log(result);
 			this.setState({
-				outdatedRequests: result['requests']
+				outdatedRequests: result
 			});
 		});
 	}
