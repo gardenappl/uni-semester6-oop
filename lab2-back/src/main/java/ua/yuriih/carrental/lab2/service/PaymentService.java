@@ -1,0 +1,26 @@
+package ua.yuriih.carrental.lab2.service;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import ua.yuriih.carrental.lab2.model.Car;
+import ua.yuriih.carrental.lab2.model.Payment;
+import ua.yuriih.carrental.lab2.repository.CarRepository;
+import ua.yuriih.carrental.lab2.repository.PaymentRepository;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class PaymentService {
+    private final PaymentRepository paymentRepository;
+    private final CarRepository carRepository;
+
+    public List<Payment> getAllPayments() {
+        return paymentRepository.findAll();
+    }
+
+    public List<Payment> getPaymentsForCar(int carId) {
+        return paymentRepository.findAllByCar(carRepository.getById(carId));
+    }
+}

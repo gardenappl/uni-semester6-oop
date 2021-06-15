@@ -1,0 +1,17 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/oop2
+    username: 'oop'
+    password: ''
+  liquibase:
+    change-log: classpath:/db/changelog/db.changeLog-master.xml
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  application:
+    name: core
+
+logging:
+  level:
+    liquibase: INFO
