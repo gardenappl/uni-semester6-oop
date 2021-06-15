@@ -50,7 +50,7 @@ public class CarsController {
     }
 
     //admin
-    @GetMapping("/new-car")
+    @PostMapping("/new-car")
     public ResponseEntity<Car> addNewCar(@Validated @RequestBody NewRequest request) {
         return ResponseEntity.ok(carService.addCar(
                 request.model,

@@ -1,5 +1,6 @@
 package ua.yuriih.carrental.lab2.controller;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,6 +24,7 @@ public class UserController {
     }
 
     @Data
+    @AllArgsConstructor
     private static class LoginResponse {
         public String token;
         public boolean shouldUseAdminFrontend;
