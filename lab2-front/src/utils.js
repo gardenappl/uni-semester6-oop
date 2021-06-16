@@ -7,6 +7,9 @@ async function fetchPostJson(url, object) {
 			'Content-Type': 'application/json'
 		}
 	}
+	if (localStorage.getItem('token')) {
+		options.headers['Authorization'] = 'Bearer ' + localStorage.getItem("token")
+	}
 	const response = await fetch(url, options);
 	const text = await response.text();
 	console.log(`Response: ${text}`);
@@ -22,7 +25,13 @@ async function fetchPostJson(url, object) {
 }
 
 async function fetchGetJson(url) {
-	const response = await fetch(url);
+	let options = {
+		headers: {}
+	}
+	if (localStorage.getItem('token')) {
+		options.headers['Authorization'] = 'Bearer ' + localStorage.getItem("token")
+	}
+	const response = await fetch(url, options);
 	const text = await response.text();
 	console.log(`Response: ${text}`);
 	try {

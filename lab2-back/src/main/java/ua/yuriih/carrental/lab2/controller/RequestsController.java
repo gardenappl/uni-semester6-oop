@@ -2,7 +2,10 @@ package ua.yuriih.carrental.lab2.controller;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ua.yuriih.carrental.lab2.model.RentRequest;
@@ -20,30 +23,34 @@ public class RequestsController {
     private final RentRequestService rentRequestService;
     private final UserService userService;
 
-    @GetMapping("/requests/outdated/{id}")
-    public ResponseEntity<List<RentRequest>> getOutdatedRequests(@PathVariable("id") long userId) {
+    @GetMapping("/requests/my-outdated")
+    @PreAuthorize("hasAnyAuthority('user')")
+    public ResponseEntity<List<RentRequest>> getOutdatedRequests(Authentication auth) {
+        long userId = userService.getUserByKeycloakId(auth.getName()).getPassportId();
         return ResponseEntity.ok(rentRequestService.getActiveOutdatedRequests(userId));
     }
 
-    @GetMapping("/requests/status/{status}/{id}")
-    public ResponseEntity<List<RentRequest>> getRequests(@PathVariable("status") int status, @PathVariable("id") long userId) {
+    @GetMapping("/requests/status/my/{status}")
+    @PreAuthorize("hasAnyAuthority('user')")
+    public ResponseEntity<List<RentRequest>> getRequests(@PathVariable("status") int status, Authentication auth) {
+        long userId = userService.getUserByKeycloakId(auth.getName()).getPassportId();
         return ResponseEntity.ok(rentRequestService.getRequestsWithStatusForUser(status, userId));
     }
 
-    //admin only
     @GetMapping("/requests/outdated")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity<List<RentRequest>> getOutdatedRequests() {
         return ResponseEntity.ok(rentRequestService.getActiveOutdatedRequests());
     }
 
-    //admin only
     @GetMapping("/requests/status/{status}")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity<List<RentRequest>> getRequests(@PathVariable("status") int status) {
         return ResponseEntity.ok(rentRequestService.getRequestsWithStatus(status));
     }
 
-    //admin only
     @PostMapping("/requests/approve/{id}")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity approve(@PathVariable("id") int requestId) {
         rentRequestService.approve(requestId);
         return ResponseEntity.ok().build();
@@ -54,8 +61,8 @@ public class RequestsController {
         private String message;
     }
 
-    //admin only
     @PostMapping("/requests/deny/{id}")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity deny(@PathVariable("id") int requestId, @Validated @RequestBody DenyRequest request) {
         rentRequestService.deny(requestId, request.message);
         return ResponseEntity.ok().build();
@@ -66,8 +73,8 @@ public class RequestsController {
         private BigDecimal maintenanceCostUah;
     }
 
-    //admin only
     @PostMapping("/requests/end/{id}")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity end(@PathVariable("id") int requestId, @Validated @RequestBody EndSuccessfullyRequest request) {
         rentRequestService.endSuccessfully(requestId, request.maintenanceCostUah);
         return ResponseEntity.ok().build();
@@ -79,8 +86,8 @@ public class RequestsController {
         private BigDecimal repairCostUah;
     }
 
-    //admin only
     @PostMapping("/requests/broken/{id}")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity broken(@PathVariable("id") int requestId, @Validated @RequestBody BrokenRequest request) {
         rentRequestService.setNeedsRepair(requestId, request.message, request.repairCostUah);
         return ResponseEntity.ok().build();
@@ -100,15 +107,15 @@ public class RequestsController {
     @Data
     public static class NewRentRequest {
         private BigDecimal paymentUah;
-        private String token;
         private int carId;
         private int days;
         private LocalDate startDate;
     }
 
     @PostMapping("/requests/new")
-    public ResponseEntity<Integer> newPending(@Validated @RequestBody NewRentRequest request) {
-        long userId = userService.getUserIdFromToken(request.token);
+    @PreAuthorize("hasAnyAuthority('user')")
+    public ResponseEntity<Integer> newPending(@Validated @RequestBody NewRentRequest request, Authentication auth) {
+        long userId = userService.getUserByKeycloakId(auth.getName()).getPassportId();
         return ResponseEntity.ok(rentRequestService.addNewPending(
                 userId,
                 request.carId,

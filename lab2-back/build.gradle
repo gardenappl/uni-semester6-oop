@@ -20,6 +20,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-configuration-processor'
 	implementation group: 'org.keycloak', name: 'keycloak-spring-security-adapter', version: '13.0.1'
 	implementation group: 'org.keycloak', name: 'keycloak-spring-boot-starter', version: '13.0.1'
+	implementation group: 'org.keycloak', name: 'keycloak-admin-client', version: '13.0.1'
 	implementation 'org.liquibase:liquibase-core'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'

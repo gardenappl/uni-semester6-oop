@@ -21,6 +21,7 @@ class Login extends Component {
 	}
 	handleSubmit(event) {
 		console.log("Logging in");
+		localStorage.removeItem('token');
 		fetchPostJson(API_SERVER + "/login", this.state)
 		.then((result) => {
 			console.error(result);

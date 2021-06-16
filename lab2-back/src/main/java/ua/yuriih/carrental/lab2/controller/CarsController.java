@@ -3,6 +3,7 @@ package ua.yuriih.carrental.lab2.controller;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,9 +33,7 @@ public class CarsController {
 
     @GetMapping("/car/{id}")
     public ResponseEntity<Car> getCar(@PathVariable("id") int carId) {
-        System.err.println(carId);
         Car car = carService.getCar(carId);
-        System.err.println(car);
         return ResponseEntity.ok(car);
     }
 
@@ -53,8 +52,8 @@ public class CarsController {
         public BigDecimal uahPurchase;
     }
 
-    //admin
     @PostMapping("/new-car")
+    @PreAuthorize("hasAnyAuthority('admin')")
     public ResponseEntity addNewCar(@Validated @RequestBody NewRequest request) {
         carService.addCar(
                 request.model,

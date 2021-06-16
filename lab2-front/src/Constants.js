@@ -1,4 +1,4 @@
-const API_SERVER = "http://localhost:8080"
+const API_SERVER = "http://localhost:8090"
 const STATUS_PENDING = 0;
 const STATUS_DENIED = 1;
 const STATUS_ACTIVE = 3;

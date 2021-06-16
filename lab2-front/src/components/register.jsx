@@ -20,6 +20,7 @@ class Register extends Component {
 		});
 	}
 	handleSubmit(event) {
+		localStorage.removeItem('token');
 		fetchPostJson(API_SERVER + "/register", this.state)
 		.then((result) => {
 			if (result['token'].length > 0) {

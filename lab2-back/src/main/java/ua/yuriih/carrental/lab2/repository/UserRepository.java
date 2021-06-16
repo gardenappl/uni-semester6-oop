@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByName(String name);
 
     User findByPassportId(long passportId);
+
+    User findByKeycloakId(String keycloakId);
 }

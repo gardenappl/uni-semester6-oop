@@ -1,6 +1,7 @@
 package ua.yuriih.carrental.lab2.service;
 
 import lombok.RequiredArgsConstructor;
+import org.keycloak.adapters.springsecurity.token.KeycloakAuthenticationToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.yuriih.carrental.lab2.model.User;
@@ -10,13 +11,18 @@ import ua.yuriih.carrental.lab2.repository.UserRepository;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final KeycloakService keycloakService;
 
-    public Long getUserIdFromToken(String token) {
-        return Long.parseLong(token);
+    public boolean shouldEnableAdminFrontend(String username) {
+        return username.equals("admin");
     }
 
-    public boolean shouldEnableAdminFrontend(String token) {
-        return userRepository.findByPassportId(getUserIdFromToken(token)).getName().equals("admin");
+//    public long getUserId(KeycloakAuthenticationToken token) {
+//        return keycloakService.getUserId(token);
+//    }
+
+    public User getUserByKeycloakId(String keycloakId) {
+        return userRepository.findByKeycloakId(keycloakId);
     }
 
     @Transactional
@@ -26,7 +32,9 @@ public class UserService {
             user = new User();
             user.setPassportId(passportId);
             user.setName(username);
-            user.setKeycloakId(password);
+
+            user.setKeycloakId(keycloakService.register(user, password));
+
             userRepository.save(user);
         }
         return logIn(username, password);
@@ -36,9 +44,6 @@ public class UserService {
         User user = userRepository.findByName(username);
         if (user == null)
             return null;
-        if (!password.equals(user.getKeycloakId()))
-            return null;
-
-        return Long.toString(user.getPassportId());
+        return keycloakService.login(username, password);
     }
 }

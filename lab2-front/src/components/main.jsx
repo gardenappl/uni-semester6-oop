@@ -18,8 +18,7 @@ class MyStatus extends Component {
 	}
 
 	refreshData() {
-		const userId = localStorage.getItem('token');
-		fetchGetJson(API_SERVER + `/requests/status/${STATUS_DENIED}/${userId}`)
+		fetchGetJson(API_SERVER + `/requests/status/my/${STATUS_DENIED}`)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -27,7 +26,7 @@ class MyStatus extends Component {
 			});
 		});
 
-		fetchGetJson(API_SERVER + `/requests/status/${STATUS_REPAIR_NEEDED}/${userId}`)
+		fetchGetJson(API_SERVER + `/requests/status/my/${STATUS_REPAIR_NEEDED}`)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -35,7 +34,7 @@ class MyStatus extends Component {
 			});
 		});
 
-		fetchGetJson(API_SERVER + `/requests/status/${STATUS_PENDING}/${userId}`)
+		fetchGetJson(API_SERVER + `/requests/status/my/${STATUS_PENDING}`)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -43,7 +42,7 @@ class MyStatus extends Component {
 			});
 		});
 
-		fetchGetJson(API_SERVER + `/requests/status/${STATUS_ACTIVE}/${userId}`)
+		fetchGetJson(API_SERVER + `/requests/status/my/${STATUS_ACTIVE}`)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -51,7 +50,7 @@ class MyStatus extends Component {
 			});
 		});
 
-		fetchGetJson(API_SERVER + `/requests/outdated/${userId}`)
+		fetchGetJson(API_SERVER + `/requests/my-outdated/`)
 		.then((result) => {
 			console.log(result);
 			this.setState({

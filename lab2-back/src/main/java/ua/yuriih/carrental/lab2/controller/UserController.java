@@ -33,10 +33,9 @@ public class UserController {
     @PostMapping("login")
     public ResponseEntity<LoginResponse> login(@Validated @RequestBody LoginRequest request) {
         String token = userService.logIn(request.username, request.password);
-        System.err.println(token);
         return ResponseEntity.ok(new LoginResponse(
                 token,
-                userService.shouldEnableAdminFrontend(token)
+                userService.shouldEnableAdminFrontend(request.username)
         ));
     }
 
@@ -52,7 +51,7 @@ public class UserController {
         String token = userService.registerAndLogIn(request.passportId, request.username, request.password);
         return ResponseEntity.ok(new LoginResponse(
                 token,
-                userService.shouldEnableAdminFrontend(token)
+                userService.shouldEnableAdminFrontend(request.username)
         ));
     }
 }

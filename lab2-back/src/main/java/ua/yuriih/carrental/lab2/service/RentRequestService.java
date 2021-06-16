@@ -16,6 +16,7 @@ import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -174,7 +175,8 @@ public class RentRequestService {
         if (request.getStatus() != RentRequest.STATUS_REPAIR_NEEDED)
             throw new IllegalArgumentException("Bad rent request ID");
 
-        if (uahAmount.compareTo(request.getRepairCost()) < 0)
+        if (!Objects.equals(uahAmount, request.getRepairCost())
+                && uahAmount.compareTo(request.getRepairCost()) < 0)
             throw new IllegalArgumentException("Amount is not high enough");
 
         request.setStatus(RentRequest.STATUS_ENDED);
