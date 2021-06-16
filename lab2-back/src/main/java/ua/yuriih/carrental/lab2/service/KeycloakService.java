@@ -18,7 +18,6 @@ import ua.yuriih.carrental.lab2.model.User;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.Response;
 import java.util.Collections;
-import java.util.HashMap;
 
 @Service
 public class KeycloakService {
@@ -77,10 +76,7 @@ public class KeycloakService {
         userRepresentation.setEnabled(true);
         userRepresentation.setUsername(user.getName());
         String passportId = Long.toString(user.getPassportId());
-
-        userRepresentation.setAttributes(new HashMap<>());
-        userRepresentation.getAttributes().put("passport_id", Collections.singletonList(passportId));
-
+        userRepresentation.setAttributes(Collections.singletonMap("passport_id", Collections.singletonList(passportId)));
 
         UsersResource users = realm.users();
 

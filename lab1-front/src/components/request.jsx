@@ -76,7 +76,7 @@ class RequestInfo extends Component {
 			requestId: this.props.requestId
 		}).then((result) => {
 			if (result['success']) {
-				console.log("Thank you, please don't do this again.");
+				alert("Thank you, please don't do this again.");
 				this.props.onStatusChange(this.props.requestId);
 			}
 		});
