@@ -18,7 +18,11 @@ import java.util.List;
 public class RentController {
     public static final RentController INSTANCE = new RentController();
 
-    private RentController() {}
+    private RentRequestDao requestDao = RentRequestDao.INSTANCE;
+    private CarDao carDao = CarDao.INSTANCE;
+    private PaymentDao paymentDao = PaymentDao.INSTANCE;
+
+    RentController() {}
 
     public List<RequestInfo> getRequestsWithStatus(int status) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
@@ -46,18 +50,13 @@ public class RentController {
 
     public RentRequest addNewPending(long userId, int carId, int days, LocalDate startDate, BigDecimal hrnAmount) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-            CarDao carDao = CarDao.INSTANCE;
-            PaymentDao paymentDao = PaymentDao.INSTANCE;
-
-
             return connection.doTransaction(() -> {
                 Car car = carDao.getCar(connection, carId);
 
                 if (hrnAmount.compareTo(car.getHrnPerDay().multiply(BigDecimal.valueOf(days))) < 0)
                     throw new IllegalArgumentException("Payment amount is not high enough");
 
-                RentRequest request = rentRequestDao.insert(connection, RentRequest.STATUS_PENDING, "", userId, carId, days, startDate, null);
+                RentRequest request = requestDao.insert(connection, RentRequest.STATUS_PENDING, "", userId, carId, days, startDate, null);
                 paymentDao.insertPayment(connection, hrnAmount, request.getId(), Payment.TYPE_REVENUE, carId, Instant.now());
 
                 return request;
@@ -67,11 +66,8 @@ public class RentController {
 
     public RentRequest approve(int id) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-            CarDao carDao = CarDao.INSTANCE;
-
             return connection.doTransaction(() -> {
-                RentRequest request = rentRequestDao.getRequest(connection, id);
+                RentRequest request = requestDao.getRequest(connection, id);
 
                 if (request == null || request.getStatus() != RentRequest.STATUS_PENDING) {
                     throw new IllegalArgumentException("Bad rent request ID");
@@ -88,8 +84,8 @@ public class RentController {
                         request.getRepairCost()
                 );
 
-                rentRequestDao.update(connection, newRequest);
-                rentRequestDao.deleteALlPendingForCarId(connection, request.getCarId());
+                requestDao.update(connection, newRequest);
+                requestDao.deleteALlPendingForCarId(connection, request.getCarId());
 
                 Car car = carDao.getCar(connection, request.getCarId());
                 carDao.update(connection, new Car(
@@ -110,9 +106,6 @@ public class RentController {
 
     public RentRequest deny(int id, String message) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            RentRequestDao requestDao = RentRequestDao.INSTANCE;
-            PaymentDao paymentDao = PaymentDao.INSTANCE;
-
             return connection.doTransaction(() -> {
                 RentRequest request = requestDao.getRequest(connection, id);
 
@@ -151,11 +144,8 @@ public class RentController {
 
     public RentRequest endSuccessfully(int id, BigDecimal maintenanceCostHrn) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-            CarDao carDao = CarDao.INSTANCE;
-            PaymentDao paymentDao = PaymentDao.INSTANCE;
-
             return connection.doTransaction(() -> {
+                RentRequestDao rentRequestDao = this.requestDao;
                 RentRequest request = rentRequestDao.getRequest(connection, id);
 
                 if (request == null || request.getStatus() != RentRequest.STATUS_ACTIVE) {
@@ -202,8 +192,7 @@ public class RentController {
 
     public RentRequest setNeedsRepair(int id, String message, BigDecimal paymentCost) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-            PaymentDao paymentDao = PaymentDao.INSTANCE;
+            RentRequestDao rentRequestDao = this.requestDao;
 
             return connection.doTransaction(() -> {
                 RentRequest request = rentRequestDao.getRequest(connection, id);
@@ -240,10 +229,7 @@ public class RentController {
 
     public RentRequest payForRepair(int id, BigDecimal hrnAmount) {
         try (ConnectionWrapper connection = ConnectionPool.INSTANCE.getConnection()) {
-            RentRequestDao rentRequestDao = RentRequestDao.INSTANCE;
-            CarDao carDao = CarDao.INSTANCE;
-            PaymentDao paymentDao = PaymentDao.INSTANCE;
-
+            RentRequestDao rentRequestDao = this.requestDao;
 
             return connection.doTransaction(() -> {
                 RentRequest request = rentRequestDao.getRequest(connection, id);

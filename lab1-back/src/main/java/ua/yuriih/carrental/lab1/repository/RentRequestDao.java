@@ -13,7 +13,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class RentRequestDao {
+public class RentRequestDao {
     public static final RentRequestDao INSTANCE = new RentRequestDao();
 
     private RentRequestDao() {}

@@ -4,6 +4,7 @@
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="web" url="file://$PROJECT_DIR$" />
     <file type="web" url="file://$USER_HOME$/windows/Yurik/uni/semester6/oop/oop-projects/lab1" />
+    <file type="web" url="file://$USER_HOME$/windows/Yurik/uni/semester6/oop/oop-projects/lab1-back" />
   </component>
   <component name="ProjectRootManager" version="2" languageLevel="JDK_15" default="true" project-jdk-name="15" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />

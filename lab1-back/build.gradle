@@ -14,8 +14,11 @@ dependencies {
     compileOnly group: 'jakarta.servlet', name: 'jakarta.servlet-api', version: '5.0.0'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.2'
     implementation 'org.postgresql:postgresql:42.2.20'
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+
+    testImplementation group: 'junit', name: 'junit', version: '4.13.2'
+    testImplementation group: 'org.powermock', name: 'powermock-api-mockito', version: '1.6.4'
+    testImplementation group: 'org.powermock', name: 'powermock-module-junit4', version: '1.6.4'
+//    testImplementation group: 'org.mockito', name: 'mockito-core', version: '3.11.1'
 }
 
 test {

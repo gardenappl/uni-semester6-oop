@@ -13,7 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class UserDao {
+public class UserDao {
 
     public static final UserDao INSTANCE = new UserDao();
 

@@ -14,7 +14,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class CarDao {
+public class CarDao {
     public static final CarDao INSTANCE = new CarDao();
 
     private CarDao() {}

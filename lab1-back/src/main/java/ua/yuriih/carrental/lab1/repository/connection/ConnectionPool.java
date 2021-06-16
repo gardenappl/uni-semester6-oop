@@ -9,7 +9,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public final class ConnectionPool {
     public static ConnectionPool INSTANCE = new ConnectionPool();
-    private static final int MAX_CONNECTIONS = 10;
+    public static final int MAX_CONNECTIONS = 10;
 
     private final ArrayList<Connection> allConnections = new ArrayList<>();
     private final LinkedBlockingQueue<Connection> unusedConnections = new LinkedBlockingQueue<>();
@@ -27,12 +27,16 @@ public final class ConnectionPool {
         return new ConnectionWrapper(connection, this);
     }
 
+    public int getUnusedConnections() {
+        return unusedConnections.size();
+    }
+
     void release(ConnectionWrapper connectionWrapper) {
         unusedConnections.add(connectionWrapper.connection);
     }
 
     private Connection createConnection() {
-        System.err.println("Creating connection");
+//        System.err.println("Creating connection");
         try {
             Class.forName("org.postgresql.Driver");
             return DriverManager.getConnection("jdbc:postgresql://localhost:5432/oop", "oop", "");

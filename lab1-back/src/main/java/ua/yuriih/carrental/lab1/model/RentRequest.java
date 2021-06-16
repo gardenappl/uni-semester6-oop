@@ -88,7 +88,7 @@ public final class RentRequest {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         RentRequest that = (RentRequest) o;
-        return id == that.id && status == that.status && userId == that.userId && days == that.days && carId == that.carId && Objects.equals(statusMessage, that.statusMessage) && startDate.equals(that.startDate) && repairCost.equals(that.repairCost);
+        return id == that.id && status == that.status && userId == that.userId && days == that.days && carId == that.carId && Objects.equals(statusMessage, that.statusMessage) && startDate.equals(that.startDate) && Objects.equals(repairCost, that.repairCost);
     }
 
     @Override

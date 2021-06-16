@@ -8,7 +8,7 @@ import ua.yuriih.carrental.lab1.repository.connection.ConnectionWrapper;
 import java.util.HashMap;
 import java.util.Random;
 
-public final class UserController {
+public class UserController {
     public static final UserController INSTANCE = new UserController();
 
     private static final Random RNG = new Random();
