@@ -4,12 +4,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import ua.yuriih.carrental.lab1.controller.CarController;
 import ua.yuriih.carrental.lab1.controller.RentController;
 import ua.yuriih.carrental.lab1.controller.UserController;
-import ua.yuriih.carrental.lab1.model.Car;
 import ua.yuriih.carrental.lab1.model.RequestInfo;
-import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
+import ua.yuriih.carrental.lab1.util.ServletJsonMapper;
 
 import java.util.List;
 
@@ -31,7 +29,7 @@ public class GetUserRequestsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
+        Request request = ServletJsonMapper.objectFromJsonRequest(req, Request.class);
 
         long userId = UserController.INSTANCE.getUserIdFromToken(request.token);
 
@@ -41,7 +39,7 @@ public class GetUserRequestsServlet extends HttpServlet {
         RequestInfo[] requestInfos = new RequestInfo[requestInfoList.size()];
         requestInfoList.toArray(requestInfos);
 
-        ServletJsonUtils.objectToJsonResponse(new Response(requestInfos), resp);
+        ServletJsonMapper.objectToJsonResponse(new Response(requestInfos), resp);
     }
 }
 

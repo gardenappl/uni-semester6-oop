@@ -8,11 +8,28 @@ import java.util.Objects;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public final class ConnectionPool {
-    public static ConnectionPool INSTANCE = new ConnectionPool();
+    public static ConnectionPool INSTANCE = new ConnectionPool(
+            "jdbc:postgresql://localhost:5432/oop",
+            "oop",
+            "",
+            "org.postgresql.Driver"
+    );
     public static final int MAX_CONNECTIONS = 10;
 
     private final ArrayList<Connection> allConnections = new ArrayList<>();
     private final LinkedBlockingQueue<Connection> unusedConnections = new LinkedBlockingQueue<>();
+
+    private final String url;
+    private final String user;
+    private final String password;
+    private final String driver;
+
+    public ConnectionPool(String url, String user, String password, String driver) {
+        this.url = url;
+        this.user = user;
+        this.password = password;
+        this.driver = driver;
+    }
 
     public ConnectionWrapper getConnection() {
         Connection connection;
@@ -27,7 +44,7 @@ public final class ConnectionPool {
         return new ConnectionWrapper(connection, this);
     }
 
-    public int getUnusedConnections() {
+    public int getUnusedConnectionsCount() {
         return unusedConnections.size();
     }
 
@@ -36,10 +53,9 @@ public final class ConnectionPool {
     }
 
     private Connection createConnection() {
-//        System.err.println("Creating connection");
         try {
-            Class.forName("org.postgresql.Driver");
-            return DriverManager.getConnection("jdbc:postgresql://localhost:5432/oop", "oop", "");
+            Class.forName(driver);
+            return DriverManager.getConnection(url, user, password);
         } catch (SQLException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

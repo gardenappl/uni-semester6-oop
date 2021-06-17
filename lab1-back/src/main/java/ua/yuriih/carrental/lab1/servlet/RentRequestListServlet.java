@@ -1,17 +1,13 @@
 package ua.yuriih.carrental.lab1.servlet;
 
-import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ua.yuriih.carrental.lab1.controller.RentController;
 import ua.yuriih.carrental.lab1.controller.UserController;
-import ua.yuriih.carrental.lab1.model.Car;
-import ua.yuriih.carrental.lab1.model.RentRequest;
 import ua.yuriih.carrental.lab1.model.RequestInfo;
-import ua.yuriih.carrental.lab1.model.User;
-import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
+import ua.yuriih.carrental.lab1.util.ServletJsonMapper;
 
 import java.util.List;
 
@@ -33,10 +29,10 @@ public class RentRequestListServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
+        Request request = ServletJsonMapper.objectFromJsonRequest(req, Request.class);
 
         if (!UserController.INSTANCE.isAdminToken(request.token)) {
-            ServletJsonUtils.objectToJsonResponse(new Response(new RequestInfo[0]), resp);
+            ServletJsonMapper.objectToJsonResponse(new Response(new RequestInfo[0]), resp);
             return;
         }
 
@@ -46,6 +42,6 @@ public class RentRequestListServlet extends HttpServlet {
         RequestInfo[] rentRequests = new RequestInfo[rentRequestList.size()];
         rentRequestList.toArray(rentRequests);
 
-        ServletJsonUtils.objectToJsonResponse(new Response(rentRequests), resp);
+        ServletJsonMapper.objectToJsonResponse(new Response(rentRequests), resp);
     }
 }

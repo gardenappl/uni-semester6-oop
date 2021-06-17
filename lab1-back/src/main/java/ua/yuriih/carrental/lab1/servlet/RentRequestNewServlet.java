@@ -7,7 +7,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ua.yuriih.carrental.lab1.controller.RentController;
 import ua.yuriih.carrental.lab1.controller.UserController;
-import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
+import ua.yuriih.carrental.lab1.util.ServletJsonMapper;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -33,7 +33,7 @@ public class RentRequestNewServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
+        Request request = ServletJsonMapper.objectFromJsonRequest(req, Request.class);
 
         LocalDate startDate = LocalDate.parse(request.startDate);
         long userId = UserController.INSTANCE.getUserIdFromToken(request.token);
@@ -41,6 +41,6 @@ public class RentRequestNewServlet extends HttpServlet {
         BigDecimal hrnAmount = new BigDecimal(request.hrnAmount);
         RentController.INSTANCE.addNewPending(userId, request.carId, request.days, startDate, hrnAmount);
 
-        ServletJsonUtils.objectToJsonResponse(new Response(true), resp);
+        ServletJsonMapper.objectToJsonResponse(new Response(true), resp);
     }
 }

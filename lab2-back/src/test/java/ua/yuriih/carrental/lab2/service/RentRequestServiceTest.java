@@ -18,6 +18,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
@@ -61,7 +62,7 @@ class RentRequestServiceTest {
 
         RentRequest pendingRequest = new RentRequest();
         pendingRequest.setStatus(RentRequest.STATUS_PENDING);
-        pendingRequest.setStatusMessage("");
+        pendingRequest.setStatusMessage(null);
         pendingRequest.setUserId(userId);
         pendingRequest.setCar(testCar);
         pendingRequest.setDays(days);
@@ -88,7 +89,7 @@ class RentRequestServiceTest {
 
         RentRequest pendingRequest = new RentRequest();
         pendingRequest.setStatus(RentRequest.STATUS_PENDING);
-        pendingRequest.setStatusMessage("");
+        pendingRequest.setStatusMessage(null);
         pendingRequest.setUserId(userId);
         pendingRequest.setCar(testCar);
         pendingRequest.setDays(days);
@@ -96,13 +97,9 @@ class RentRequestServiceTest {
         pendingRequest.setRepairCost(null);
         when(requestRepository.save(pendingRequest)).thenReturn(pendingRequest);
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            try {
-                requestService.addNewPending(userId, carId, days, date, uahAmount);
-            } catch (RuntimeException e) {
-                throw e.getCause();
-            }
-        });
+        assertThrows(RuntimeException.class, () ->
+            requestService.addNewPending(userId, carId, days, date, uahAmount)
+        );
     }
 
 
@@ -116,8 +113,9 @@ class RentRequestServiceTest {
         LocalDate date = LocalDate.now();
 
         RentRequest pendingRequest = new RentRequest();
+        pendingRequest.setId(requestId);
         pendingRequest.setStatus(RentRequest.STATUS_PENDING);
-        pendingRequest.setStatusMessage("");
+        pendingRequest.setStatusMessage(null);
         pendingRequest.setUserId(userId);
         pendingRequest.setCar(testCar);
         pendingRequest.setDays(days);
@@ -125,13 +123,14 @@ class RentRequestServiceTest {
         pendingRequest.setRepairCost(null);
 
         RentRequest approvedRequest = new RentRequest();
-        pendingRequest.setStatus(RentRequest.STATUS_ACTIVE);
-        pendingRequest.setStatusMessage("");
-        pendingRequest.setUserId(userId);
-        pendingRequest.setCar(testCar);
-        pendingRequest.setDays(days);
-        pendingRequest.setStartDate(date);
-        pendingRequest.setRepairCost(null);
+        approvedRequest.setId(requestId);
+        approvedRequest.setStatus(RentRequest.STATUS_ACTIVE);
+        approvedRequest.setStatusMessage(null);
+        approvedRequest.setUserId(userId);
+        approvedRequest.setCar(testCar);
+        approvedRequest.setDays(days);
+        approvedRequest.setStartDate(date);
+        approvedRequest.setRepairCost(null);
 
         when(requestRepository.getById(requestId)).thenReturn(pendingRequest);
         when(requestRepository.save(approvedRequest)).thenReturn(approvedRequest);
@@ -144,11 +143,86 @@ class RentRequestServiceTest {
 
     @Test
     public void deny() {
+        when(carRepository.getById(0)).thenReturn(testCar);
 
+        long userId = 1L;
+        int requestId = 2;
+        int days = 5;
+        LocalDate date = LocalDate.now();
+        String statusMessage = "denialTest";
+
+        RentRequest pendingRequest = new RentRequest();
+        pendingRequest.setId(requestId);
+        pendingRequest.setStatus(RentRequest.STATUS_PENDING);
+        pendingRequest.setStatusMessage(null);
+        pendingRequest.setUserId(userId);
+        pendingRequest.setCar(testCar);
+        pendingRequest.setDays(days);
+        pendingRequest.setStartDate(date);
+        pendingRequest.setRepairCost(null);
+
+        RentRequest deniedRequest = new RentRequest();
+        deniedRequest.setId(requestId);
+        deniedRequest.setStatus(RentRequest.STATUS_DENIED);
+        deniedRequest.setStatusMessage(statusMessage);
+        deniedRequest.setUserId(userId);
+        deniedRequest.setCar(testCar);
+        deniedRequest.setDays(days);
+        deniedRequest.setStartDate(date);
+        deniedRequest.setRepairCost(null);
+
+        when(requestRepository.getById(requestId)).thenReturn(pendingRequest);
+        when(requestRepository.save(deniedRequest)).thenReturn(deniedRequest);
+
+        Payment payment = new Payment();
+        payment.setRentRequestId(requestId);
+        payment.setType(Payment.TYPE_REVENUE);
+        payment.setUahAmount(BigDecimal.valueOf(100));
+        payment.setCar(testCar);
+        when(paymentRepository.getFirstByRentRequestIdAndType(requestId, Payment.TYPE_REVENUE))
+                .thenReturn(payment);
+
+        requestService.deny(requestId, statusMessage);
+
+        verify(requestRepository).save(deniedRequest);
     }
 
     @Test
     public void end() {
+        when(carRepository.getById(0)).thenReturn(testCar);
 
+        long userId = 1L;
+        int requestId = 2;
+        int days = 5;
+        LocalDate date = LocalDate.now();
+
+        RentRequest activeRequest = new RentRequest();
+        activeRequest.setId(requestId);
+        activeRequest.setStatus(RentRequest.STATUS_ACTIVE);
+        activeRequest.setStatusMessage(null);
+        activeRequest.setUserId(userId);
+        activeRequest.setCar(testCar);
+        activeRequest.setDays(days);
+        activeRequest.setStartDate(date);
+        activeRequest.setRepairCost(null);
+
+        RentRequest endedRequest = new RentRequest();
+        endedRequest.setId(requestId);
+        endedRequest.setStatus(RentRequest.STATUS_ENDED);
+        endedRequest.setStatusMessage(null);
+        endedRequest.setUserId(userId);
+        endedRequest.setCar(testCar);
+        endedRequest.setDays(days);
+        endedRequest.setStartDate(date);
+        endedRequest.setRepairCost(null);
+
+        when(requestRepository.getById(requestId)).thenReturn(activeRequest);
+        when(requestRepository.save(endedRequest)).thenReturn(endedRequest);
+
+        requestService.endSuccessfully(requestId, BigDecimal.TEN);
+
+        verify(carRepository).save(any());
+        verify(paymentRepository).save(any());
+        verify(requestRepository).save(endedRequest);
     }
 }

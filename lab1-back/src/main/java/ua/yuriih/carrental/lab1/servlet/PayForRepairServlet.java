@@ -6,8 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ua.yuriih.carrental.lab1.controller.RentController;
-import ua.yuriih.carrental.lab1.controller.UserController;
-import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
+import ua.yuriih.carrental.lab1.util.ServletJsonMapper;
 
 import java.math.BigDecimal;
 
@@ -29,11 +28,11 @@ public class PayForRepairServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
+        Request request = ServletJsonMapper.objectFromJsonRequest(req, Request.class);
 
         BigDecimal hrnAmount = new BigDecimal(request.hrnAmount);
         RentController.INSTANCE.payForRepair(request.requestId, hrnAmount);
 
-        ServletJsonUtils.objectToJsonResponse(new Response(true), resp);
+        ServletJsonMapper.objectToJsonResponse(new Response(true), resp);
     }
 }

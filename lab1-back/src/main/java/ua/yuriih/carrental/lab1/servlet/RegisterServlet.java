@@ -1,7 +1,7 @@
 package ua.yuriih.carrental.lab1.servlet;
 
 import ua.yuriih.carrental.lab1.controller.UserController;
-import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
+import ua.yuriih.carrental.lab1.util.ServletJsonMapper;
 
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -28,15 +28,15 @@ public class RegisterServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
+        Request request = ServletJsonMapper.objectFromJsonRequest(req, Request.class);
 
         Long token = UserController.INSTANCE.registerAndLogIn(request.passportId, request.username, request.password);
 
         if (token != null) {
             boolean isAdmin = UserController.INSTANCE.isAdminToken(token);
-            ServletJsonUtils.objectToJsonResponse(new Response(token.toString(), isAdmin), resp);
+            ServletJsonMapper.objectToJsonResponse(new Response(token.toString(), isAdmin), resp);
         } else {
-            ServletJsonUtils.objectToJsonResponse(new Response("", false), resp);
+            ServletJsonMapper.objectToJsonResponse(new Response("", false), resp);
         }
     }
 }

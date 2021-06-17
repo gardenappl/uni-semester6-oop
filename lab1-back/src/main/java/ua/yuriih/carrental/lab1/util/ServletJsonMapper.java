@@ -10,7 +10,7 @@ import java.io.PrintWriter;
 import java.io.StringReader;
 import java.util.stream.Collectors;
 
-public final class ServletJsonUtils {
+public final class ServletJsonMapper {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     static {
@@ -21,7 +21,6 @@ public final class ServletJsonUtils {
         response.setContentType("application/json");
         try {
             String json = objectMapper.writeValueAsString(object);
-            System.err.println("Response: " + json);
             PrintWriter out = response.getWriter();
             out.print(json);
             out.flush();

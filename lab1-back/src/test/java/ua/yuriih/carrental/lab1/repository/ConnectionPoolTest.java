@@ -17,13 +17,13 @@ public class ConnectionPoolTest {
         }
 
         //Fill the pool
-        assertEquals(0, pool.getUnusedConnections());
+        assertEquals(0, pool.getUnusedConnectionsCount());
 
         //Free everything
         for (int i = 0; i < ConnectionPool.MAX_CONNECTIONS; i++) {
-            assertEquals(i, pool.getUnusedConnections());
+            assertEquals(i, pool.getUnusedConnectionsCount());
             wrappers[i].close();
-            assertEquals(i + 1, pool.getUnusedConnections());
+            assertEquals(i + 1, pool.getUnusedConnectionsCount());
         }
     }
 
@@ -43,18 +43,18 @@ public class ConnectionPoolTest {
 
         //Acquire and auto-close connections
 
-        assertEquals(ConnectionPool.MAX_CONNECTIONS, pool.getUnusedConnections());
+        assertEquals(ConnectionPool.MAX_CONNECTIONS, pool.getUnusedConnectionsCount());
 
         try (ConnectionWrapper connection1 = pool.getConnection()) {
-            assertEquals(ConnectionPool.MAX_CONNECTIONS - 1, pool.getUnusedConnections());
+            assertEquals(ConnectionPool.MAX_CONNECTIONS - 1, pool.getUnusedConnectionsCount());
 
             try (ConnectionWrapper connection2 = pool.getConnection()) {
-                assertEquals(ConnectionPool.MAX_CONNECTIONS - 2, pool.getUnusedConnections());
+                assertEquals(ConnectionPool.MAX_CONNECTIONS - 2, pool.getUnusedConnectionsCount());
             }
 
-            assertEquals(ConnectionPool.MAX_CONNECTIONS - 1, pool.getUnusedConnections());
+            assertEquals(ConnectionPool.MAX_CONNECTIONS - 1, pool.getUnusedConnectionsCount());
         }
 
-        assertEquals(ConnectionPool.MAX_CONNECTIONS, pool.getUnusedConnections());
+        assertEquals(ConnectionPool.MAX_CONNECTIONS, pool.getUnusedConnectionsCount());
     }
 }

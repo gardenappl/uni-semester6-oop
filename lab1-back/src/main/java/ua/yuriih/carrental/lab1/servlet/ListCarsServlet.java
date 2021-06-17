@@ -6,10 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ua.yuriih.carrental.lab1.controller.CarController;
 import ua.yuriih.carrental.lab1.model.Car;
-import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
+import ua.yuriih.carrental.lab1.util.ServletJsonMapper;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @WebServlet(value = "/cars", name = "carsServlet")
@@ -30,7 +29,7 @@ public class ListCarsServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
+        Request request = ServletJsonMapper.objectFromJsonRequest(req, Request.class);
 
         CarController controller = CarController.INSTANCE;
 
@@ -45,6 +44,6 @@ public class ListCarsServlet extends HttpServlet {
             cars.add(CarController.INSTANCE.getCar(request.carId));
         }
 
-        ServletJsonUtils.objectToJsonResponse(new Response(cars), resp);
+        ServletJsonMapper.objectToJsonResponse(new Response(cars), resp);
     }
 }

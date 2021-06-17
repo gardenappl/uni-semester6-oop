@@ -63,7 +63,6 @@ public class ConnectionWrapper implements Closeable {
     @Override
     public void close() {
         synchronized (pool) {
-//            System.err.println("Releasing connection");
             if (!isClosed) {
                 isClosed = true;
                 pool.release(this);

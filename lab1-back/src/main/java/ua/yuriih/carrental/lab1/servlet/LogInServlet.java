@@ -6,7 +6,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import ua.yuriih.carrental.lab1.controller.UserController;
-import ua.yuriih.carrental.lab1.util.ServletJsonUtils;
+import ua.yuriih.carrental.lab1.util.ServletJsonMapper;
 
 @WebServlet(value = "/login", name = "loginServlet")
 public class LogInServlet extends HttpServlet {
@@ -28,15 +28,15 @@ public class LogInServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) {
-        Request request = ServletJsonUtils.objectFromJsonRequest(req, Request.class);
+        Request request = ServletJsonMapper.objectFromJsonRequest(req, Request.class);
 
         Long token = UserController.INSTANCE.logIn(request.username, request.password);
 
         if (token != null) {
             boolean isAdmin = UserController.INSTANCE.isAdminToken(token);
-            ServletJsonUtils.objectToJsonResponse(new Response(token.toString(), isAdmin), resp);
+            ServletJsonMapper.objectToJsonResponse(new Response(token.toString(), isAdmin), resp);
         } else {
-            ServletJsonUtils.objectToJsonResponse(new Response("", false), resp);
+            ServletJsonMapper.objectToJsonResponse(new Response("", false), resp);
         }
     }
 }
