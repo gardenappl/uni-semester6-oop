@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { fetchPostJson, fetchGetJson, lastSegment } from "../utils.js";
 import { NavLink } from "react-router-dom";
-import API_SERVER from "../Constants.js";
+import { API_SERVER_CARS, API_SERVER_PAYMENTS } from "../Constants.js";
 import { paymentsToTotal, paymentToComponent } from "./payment.jsx";
 
 class CarInfo extends Component {
@@ -16,13 +16,13 @@ class CarInfo extends Component {
 			uahPerDay: "",
 			payments: []
 		}
-		fetchGetJson(API_SERVER + `/car/${carId}`)
+		fetchGetJson(API_SERVER_CARS + `/cars/${carId}`)
 		.then((result) => {
 			console.log(result);
 			this.setState(result);
 		});
 		if (localStorage.getItem('isAdmin') === 'true') {
-			fetchGetJson(API_SERVER + `/payments/car/${carId}`)
+			fetchGetJson(API_SERVER_PAYMENTS + `/payments/car/${carId}`)
 			.then((result) => {
 				this.setState({
 					payments: result

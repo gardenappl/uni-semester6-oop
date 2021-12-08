@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { fetchGetJson, fetchPostJson } from "../utils.js";
-import API_SERVER, { STATUS_REPAIR_NEEDED, STATUS_PENDING, STATUS_ACTIVE } from "../Constants.js";
+import { API_SERVER_REQUESTS, STATUS_REPAIR_NEEDED, STATUS_PENDING, STATUS_ACTIVE } from "../Constants.js";
 
 
 class RequestInfo extends Component {
@@ -16,7 +16,7 @@ class RequestInfo extends Component {
 
 	onAccept() {
 		console.log(this.props);
-		fetchPostJson(API_SERVER + `/requests/approve/${this.props.requestId}`, {})
+		fetchPostJson(API_SERVER_REQUESTS + `/requests/approve/${this.props.requestId}`, {})
 		.then((_result) => {
 			this.props.onStatusChange(this.props.requestId);
 		});
@@ -25,7 +25,7 @@ class RequestInfo extends Component {
 	onDeny() {
 		console.log(this.props);
 		const reason = prompt("Enter reason for denial");
-		fetchPostJson(API_SERVER + `/requests/deny/${this.props.requestId}`, {
+		fetchPostJson(API_SERVER_REQUESTS + `/requests/deny/${this.props.requestId}`, {
 			message: reason
 		}).then((_result) => {
 			this.props.onStatusChange(this.props.requestId);
@@ -35,7 +35,7 @@ class RequestInfo extends Component {
 	onEnd() {
 		console.log(this.props);
 		const sum = prompt("Enter maintenance cost (e.g. '250' for 250 UAH)");
-		fetchPostJson(API_SERVER + `/requests/end/${this.props.requestId}`, {
+		fetchPostJson(API_SERVER_REQUESTS + `/requests/end/${this.props.requestId}`, {
 			maintenanceCostUah: sum
 		}).then((_result) => {
 			this.props.onStatusChange(this.props.requestId);
@@ -46,7 +46,7 @@ class RequestInfo extends Component {
 		console.log(this.props);
 		const reason = prompt("Enter reason for repair costs");
 		const sum = prompt("Enter repair cost (e.g. '1000' for 1000 UAH)");
-		fetchPostJson(API_SERVER + `/requests/broken/${this.props.requestId}`, {
+		fetchPostJson(API_SERVER_REQUESTS + `/requests/broken/${this.props.requestId}`, {
 			message: reason,
 			repairCostUah: sum
 		}).then((_result) => {
@@ -55,7 +55,7 @@ class RequestInfo extends Component {
 	}
 
 	payRepair() {
-		fetchPostJson(API_SERVER + `/requests/repair/${this.props.requestId}`, {
+		fetchPostJson(API_SERVER_REQUESTS + `/requests/repair/${this.props.requestId}`, {
 			paymentUah: this.props.repairCost
 		}).then((_result) => {
 			alert("Thank you, please don't do this again.");

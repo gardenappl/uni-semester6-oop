@@ -40,8 +40,9 @@ function App() {
           </div>
 	  
 	  <div class="footer">
-	    <span>Грищенко Юрій</span>
-	    <span>ІПС-32</span>
+	    <span>Бондарець, Грищенко, Мединскьий & Пащенко</span>
+	    <span>IS-42</span>
+	    <span>bhmp42@example.com</span>
 	    <span>(335) 355 35 53</span>
 	  </div>
         </div>

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { fetchGetJson } from "../utils.js";
-import API_SERVER, { STATUS_REPAIR_NEEDED, STATUS_DENIED, STATUS_PENDING, STATUS_ACTIVE } from "../Constants.js";
+import { API_SERVER_REQUESTS, STATUS_REPAIR_NEEDED, STATUS_DENIED, STATUS_PENDING, STATUS_ACTIVE } from "../Constants.js";
 import { requestInfoToComponent } from "./request.jsx";
 
 class MyStatus extends Component {
@@ -18,7 +18,7 @@ class MyStatus extends Component {
 	}
 
 	refreshData() {
-		fetchGetJson(API_SERVER + `/requests/status/my/${STATUS_DENIED}`)
+		fetchGetJson(API_SERVER_REQUESTS + `/requests/status/my/${STATUS_DENIED}`)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -26,7 +26,7 @@ class MyStatus extends Component {
 			});
 		});
 
-		fetchGetJson(API_SERVER + `/requests/status/my/${STATUS_REPAIR_NEEDED}`)
+		fetchGetJson(API_SERVER_REQUESTS + `/requests/status/my/${STATUS_REPAIR_NEEDED}`)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -34,7 +34,7 @@ class MyStatus extends Component {
 			});
 		});
 
-		fetchGetJson(API_SERVER + `/requests/status/my/${STATUS_PENDING}`)
+		fetchGetJson(API_SERVER_REQUESTS + `/requests/status/my/${STATUS_PENDING}`)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -42,7 +42,7 @@ class MyStatus extends Component {
 			});
 		});
 
-		fetchGetJson(API_SERVER + `/requests/status/my/${STATUS_ACTIVE}`)
+		fetchGetJson(API_SERVER_REQUESTS + `/requests/status/my/${STATUS_ACTIVE}`)
 		.then((result) => {
 			console.log(result);
 			this.setState({
@@ -50,7 +50,7 @@ class MyStatus extends Component {
 			});
 		});
 
-		fetchGetJson(API_SERVER + `/requests/my-outdated/`)
+		fetchGetJson(API_SERVER_REQUESTS + `/requests/my-outdated/`)
 		.then((result) => {
 			console.log(result);
 			this.setState({

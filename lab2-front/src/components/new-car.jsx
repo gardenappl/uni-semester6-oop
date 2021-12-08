@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { fetchPostJson } from "../utils.js";
-import API_SERVER from "../Constants.js";
+import { API_SERVER_CARS } from "../Constants.js";
 
 class NewCar extends Component {
 	constructor(props) {
@@ -23,7 +23,7 @@ class NewCar extends Component {
 		});
 	}
 	handleSubmit(event) {
-		fetchPostJson(API_SERVER + "/new-car", {
+		fetchPostJson(API_SERVER_CARS + "/cars", {
 			token: localStorage.getItem('token'),
 			model: this.state.model,
 			manufacturer: this.state.manufacturer,

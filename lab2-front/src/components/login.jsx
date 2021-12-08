@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import { fetchPostJson } from "../utils.js";
-import API_SERVER from "../Constants.js";
+import { API_SERVER_USERS } from "../Constants.js";
 
 class Login extends Component {
 	constructor(props) {
@@ -22,7 +22,7 @@ class Login extends Component {
 	handleSubmit(event) {
 		console.log("Logging in");
 		localStorage.removeItem('token');
-		fetchPostJson(API_SERVER + "/login", this.state)
+		fetchPostJson(API_SERVER_USERS + "/users/login", this.state)
 		.then((result) => {
 			console.error(result);
 			if (result['token'].length > 0) {

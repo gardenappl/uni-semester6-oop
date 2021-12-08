@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { fetchGetJson } from "../utils.js";
-import API_SERVER from "../Constants.js";
+import { API_SERVER_CARS } from "../Constants.js";
 import { carToComponent } from "./car.jsx";
 import { NavLink } from "react-router-dom";
 
@@ -15,7 +15,7 @@ class Cars extends Component {
 		this.getCars = this.getCars.bind(this);
 		this.onSelectManufacturer = this.onSelectManufacturer.bind(this);
 
-		fetchGetJson(API_SERVER + "/car-manufacturers")
+		fetchGetJson(API_SERVER_CARS + "/cars/manufacturers")
 		.then((result) => {
 			this.setState({
 				manufacturers: ['---'].concat(result)
@@ -32,11 +32,11 @@ class Cars extends Component {
 	};
 
 	getCars(manufacturer) {
-		let apiMethod = "/cars-available";
+		let apiMethod = "/cars/available";
 		if (manufacturer !== '---') {
 			apiMethod += "/" + manufacturer;
 		}
-		fetchGetJson(API_SERVER + apiMethod)
+		fetchGetJson(API_SERVER_CARS + apiMethod)
 		.then((result) => {
 			console.log(result);
 			this.setState({

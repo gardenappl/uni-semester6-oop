@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { fetchPostJson } from "../utils.js";
-import API_SERVER from "../Constants.js";
+import { API_SERVER_USERS } from "../Constants.js";
 
 class Register extends Component {
 	constructor(props) {
@@ -21,7 +21,7 @@ class Register extends Component {
 	}
 	handleSubmit(event) {
 		localStorage.removeItem('token');
-		fetchPostJson(API_SERVER + "/register", this.state)
+		fetchPostJson(API_SERVER_USERS + "/users/register", this.state)
 		.then((result) => {
 			if (result['token'].length > 0) {
 				localStorage.setItem("token", result['token']);

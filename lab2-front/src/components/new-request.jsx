@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { toLocalDateString, fetchGetJson, fetchPostJson, lastSegment } from "../utils.js";
-import API_SERVER from "../Constants.js";
+import { API_SERVER_CARS, API_SERVER_REQUESTS } from "../Constants.js";
 
 class Request extends Component {
 	constructor(props) {
@@ -14,7 +14,7 @@ class Request extends Component {
 
 		this.carId = lastSegment(window.location.href);
 
-		fetchGetJson(API_SERVER + `/car/${this.carId}`)
+		fetchGetJson(API_SERVER_CARS + `/cars/${this.carId}`)
 		.then((result) => {
 			this.setState({
 				uahPerDay: result['uahPerDay']
@@ -36,7 +36,7 @@ class Request extends Component {
 		}
 	}
 	handleSubmit(event) {
-		fetchPostJson(API_SERVER + "/requests/new", {
+		fetchPostJson(API_SERVER_REQUESTS + "/requests/new", {
 			token: localStorage.getItem('token'),
 			carId: this.carId,
 			days: this.state.days,
